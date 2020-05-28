@@ -1,5 +1,5 @@
 commit 721cba540292d8d76102b18922dabe2a7d918dc5  
-Author: Holden Karau <hkarau@apple.com>  
+Author: Holden Karau `hkarau@apple.com`  
 Date:   Fri May 22 18:19:41 2020 -0700
 
     [SPARK-31791][CORE][TEST] Improve cache block migration test reliability
