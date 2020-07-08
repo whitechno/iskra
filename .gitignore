@@ -1,0 +1,54 @@
+# Mac
+.DS_Store
+
+########################################
+#             Scala                    #
+########################################
+
+# sbt
+lib_managed
+project/project
+target
+
+# Ignore maven build outputs
+# target
+artifacts
+build
+
+# Worksheets (Eclipse or IntelliJ)
+#*.sc
+
+# Eclipse
+.cache*
+.classpath
+.project
+.scala_dependencies
+.settings
+.target
+.worksheet
+
+# IntelliJ
+.idea
+*.iml
+
+# ENSIME
+.ensime
+.ensime_lucene
+.ensime_cache
+
+# Akka Persistence
+journal
+snapshots
+
+# Log files
+*.log
+
+# Ignore Jenkins build outputs
+.jenkinsTests
+
+# Unix stuff
+.history
+.cache
+
+# JVM
+*.class
