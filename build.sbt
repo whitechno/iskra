@@ -1,4 +1,4 @@
-name                     := "spark-x"
+name                     := "iskra"
 ThisBuild / version      := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "com.github.whitechno"
 ThisBuild / scalaVersion := library.versions.scala212
