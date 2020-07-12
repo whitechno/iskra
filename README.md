@@ -1,8 +1,8 @@
 Spark eXperiments
 =================
 
-Spark official
---------------
+Spark official resources
+------------------------
 
 - [Building Spark](
 https://spark.apache.org/docs/latest/building-spark.html
