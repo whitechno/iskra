@@ -1,49 +1,82 @@
-name                     := "iskra"
-ThisBuild / version      := "0.1.0-SNAPSHOT"
+ThisBuild / version      := "0.1.1" //-SNAPSHOT
 ThisBuild / organization := "com.github.whitechno"
 ThisBuild / scalaVersion := library.versions.scala212
-//ThisBuild / sparkVersion := library.versions.spark30
 
-lazy val `simple-project` = project
+/* assembly JAR for spark-submit:
+Spark libraries are "provided", but typesafeConfig has to be included
+ */
+lazy val `simple-spark-submit` = project
   .settings(
     commonSettings,
+    assemblySettings,
     libraryDependencies ++= library.spark30provided,
-    libraryDependencies ++= Seq(
-      library.typesafeConfig % "provided",
-      library.scalatest      % Test
-    ),
-    crossScalaVersions         := library.supportedScalaVersions,
-    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
-    // to put "provided" Spark dependencies back to run classpath:
-    run in Compile := Defaults
-      .runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run))
-      .evaluated,
-    runMain in Compile := Defaults
-      .runMainTask(fullClasspath in Compile, runner in (Compile, run))
-      .evaluated
+    libraryDependencies += library.typesafeConfig,
+    // In order to run in SBT (as opposed to using 'spark-submit')
+    // sbt> simple-spark-submit / runMain iskra.SimpleApp local[4]
+    // we need to put "provided" Spark dependencies back to run classpath:
+    runWithProvidedSettings
   )
 
-//
-// versions and settings
-//
+/* assembly JAR for Databricks:
+completely derived from `simple-spark-submit`
+but with typesafeConfig excluded (it is provided in Databricks Spark env).
+ */
+lazy val `simple-spark-databricks` = project
+  .dependsOn(`simple-spark-submit`)
+  .settings(
+    commonSettings,
+    assemblySettings
+  )
+  .settings(
+    excludeDependencies +=
+      ExclusionRule(
+        organization = library.typesafeConfig.organization,
+        name         = library.typesafeConfig.name
+      )
+  )
+
+/* assembly JAR with some `simple-spark-submit` dependencies excluded
+the result is exactly the same assembly JAR as for `simple-spark-databricks`
+but done in a slightly more general wasy
+ */
+lazy val `simple-spark-provided` = project
+  .dependsOn(`simple-spark-submit`)
+  .settings(
+    commonSettings,
+    assemblySettings
+  )
+  .settings(
+    excludeDependencies ++= Seq(library.typesafeConfig).map { mid =>
+      ExclusionRule(
+        organization = mid.organization,
+        name         = mid.name
+      )
+    }
+  )
+
+// List of projects for 'assemblies' task
+lazy val assemblyProjects = List(
+  `simple-spark-submit`,
+  `simple-spark-databricks`,
+  `simple-spark-provided`
+).map(_.project)
 
 lazy val library = new {
 
   val versions = new {
-    val scala210       = "2.10.7"
     val scala211       = "2.11.12"
     val scala212       = "2.12.11"
-    val scala213       = "2.13.3"
     val spark24        = "2.4.6" // Jun 05, 2020
     val spark30        = "3.0.0" // Jun 18, 2020
-    val scalatest      = "3.2.0"
+    val scalatest      = "3.2.1"
     val typesafeConfig = "1.4.0"
   }
 
   val supportedScalaVersions = List(versions.scala211, versions.scala212)
 
-  val sparkLibs       = Seq("core", "sql")
-  val spark30         = sparkLibs.map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark30 }
+  private val sparkLibs = Seq("core", "sql")
+  val spark30 = sparkLibs
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark30 }
   val spark30provided = spark30.map { _ % "provided" }
 
   val scalatest      = "org.scalatest" %% "scalatest" % versions.scalatest
@@ -51,11 +84,47 @@ lazy val library = new {
 
 }
 
+/* Use SBT task
+sbt> assemblies
+to generate assembly JARs for all projects listed in assemblyProjects
+ */
+
+val assemblyProjectFilter =
+  settingKey[ScopeFilter.ProjectFilter](
+    "Project filter for projects in assemblyProjects."
+  )
+assemblyProjectFilter := inProjects(assemblyProjects: _*)
+val assemblies =
+  taskKey[Seq[java.io.File]](
+    "Task to creates assembly JAR for projects in assemblyProjects."
+  )
+assemblies := Def.taskDyn {
+  assembly.all(ScopeFilter(assemblyProjectFilter.value))
+}.value
+
+// add these settings to projects for which assembly JARs are supposed to be generated
+lazy val assemblySettings = List(
+  test in assembly := {},
+  assemblyOption in assembly :=
+    (assemblyOption in assembly).value.copy(includeScala = false),
+  assemblyJarName in assembly :=
+    s"${name.value}-assembly_${scalaBinaryVersion.value}-${version.value}.jar"
+)
+
+// In order to run in SBT we need to put "provided" dependencies back to run classpath:
+lazy val runWithProvidedSettings = List(
+  run in Compile := Defaults
+    .runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run))
+    .evaluated,
+  runMain in Compile := Defaults
+    .runMainTask(fullClasspath in Compile, runner in (Compile, run))
+    .evaluated
+)
+
 lazy val commonSettings = List(
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
     "-feature" // [warn] there were 21 feature warnings; re-run with -feature for details
-  ),
-  test in assembly := {}
+  )
 )

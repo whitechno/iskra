@@ -28,7 +28,7 @@ Downloaded pre-built Spark packages:
   -Phive -Phive-thriftserver -DzincPort=3036
 
 ```
-~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
+$ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
   --class "SimpleApp" \
   --master local[4] \
   simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
@@ -43,6 +43,10 @@ Latest Spark built from source using Maven:
   --master local[4] \
   simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
 ```
+
+- [sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later](
+https://stackoverflow.com/questions/34015452/sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later
+)
 
 
 Spark submit, provided dependencies and assembly packages
