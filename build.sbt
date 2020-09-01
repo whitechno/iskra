@@ -59,7 +59,7 @@ lazy val assemblyProjects = List(
   `simple-spark-submit`,
   `simple-spark-databricks`,
   `simple-spark-provided`
-).map(_.project)
+)
 
 lazy val library = new {
 
@@ -88,12 +88,11 @@ lazy val library = new {
 sbt> assemblies
 to generate assembly JARs for all projects listed in assemblyProjects
  */
-
 val assemblyProjectFilter =
   settingKey[ScopeFilter.ProjectFilter](
     "Project filter for projects in assemblyProjects."
   )
-assemblyProjectFilter := inProjects(assemblyProjects: _*)
+assemblyProjectFilter := inProjects(assemblyProjects.map(_.project): _*)
 val assemblies =
   taskKey[Seq[java.io.File]](
     "Task to creates assembly JAR for projects in assemblyProjects."
