@@ -8,7 +8,7 @@ package iskra
 //import org.apache.parquet.hadoop.metadata.CompressionCodecName
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ HashPartitioner, Partitioner, SparkContext }
+import org.apache.spark.{ HashPartitioner, Partitioner, RangePartitioner, SparkContext }
 import org.apache.spark.sql.{ Dataset, SparkSession }
 import SparkUtils._
 
@@ -21,6 +21,11 @@ object TestMain_02_HashPartitioner {
     spark.stop()
   }
 
+  /**
+   * Dataset[V] can be first converted to pair RDD[(K,V)],
+   * then partitioned by partitionBy with HashPartitioner,
+   * and then transformed back to Dataset[V].
+   */
   private case class Run2Data(x: Int, y: Int)
   def run2(spark: SparkSession): Unit = {
     import spark.implicits._
@@ -37,6 +42,9 @@ object TestMain_02_HashPartitioner {
     println("NumPartitions=" + rdd.getNumPartitions)
     println("rdd: " + countByPartition(rdd).collect.toList)
 
+    val rp: RangePartitioner[Int, Run2Data] =
+      new RangePartitioner(3, rdd)
+
     val rddOnePartition: RDD[Run2Data] = rdd
       .partitionBy(new HashPartitioner(partitions = 1))
       .map(_._2)
@@ -48,12 +56,17 @@ object TestMain_02_HashPartitioner {
       .partitionBy(new HashPartitioner(partitions = 2))
       .map(_._2)
     println("rddTwoPartitions: " + countByPartition(rddTwoPartitions).collect.toList)
-    rddTwoPartitions.toDS.show(numRows = data.length)
 
-    rddTwoPartitions.toDS.mapPartitions { iter => Iterator(iter.length) }.show
+    val sdsTwoPartitions: Dataset[Run2Data] = rddTwoPartitions.toDS
+    sdsTwoPartitions.show(numRows = data.length)
+    sdsTwoPartitions.mapPartitions { iter => Iterator(iter.length) }.show
 
   }
 
+  /**
+   * Pair RDD[(K,V)] can be easily partitioned by HashPartitioner
+   * and partitionBy method.
+   */
   def run1(sc: SparkContext): Unit = {
     val data: IndexedSeq[(Int, Int)] = for {
       x <- 1 to 3
