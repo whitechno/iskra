@@ -4,6 +4,14 @@ Spark eXperiments
 Spark official resources
 ------------------------
 
+- [Download Apache Spark](
+https://spark.apache.org/downloads.html
+)
+
+- [github.com/apache/spark](
+https://github.com/apache/spark
+)
+
 - [Building Spark](
 https://spark.apache.org/docs/latest/building-spark.html
 )
@@ -12,22 +20,17 @@ https://spark.apache.org/docs/latest/building-spark.html
 https://spark.apache.org/developer-tools.html
 )
 
-- [Download Apache Spark](
-https://spark.apache.org/downloads.html
-)
-
-[Spark Overview](
-https://spark.apache.org/docs/3.0.0/
-)
+Project notes
+-------------
 
 Downloaded pre-built Spark packages:
-- ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
+```
+$ cd ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
   Spark 3.0.0 (git revision 3fdfce3120) built for Hadoop 2.7.4  
   Build flags:  
   -B -Pmesos -Pyarn -Pkubernetes -Psparkr -Pscala-2.12 -Phadoop-2.7  
   -Phive -Phive-thriftserver -DzincPort=3036
 
-```
 $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
   --class "SimpleApp" \
   --master local[4] \
@@ -35,10 +38,11 @@ $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
 ```
 
 Latest Spark built from source using Maven:
-- ~/dev/apache-github/spark/bin/
-
 ```
-~/dev/apache-github/spark/bin/spark-submit \
+$ cd ~/dev/apache-github/spark/bin/
+$ ./build/mvn -DskipTests clean package
+
+$ ~/dev/apache-github/spark/bin/spark-submit \
   --class "SimpleApp" \
   --master local[4] \
   simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
