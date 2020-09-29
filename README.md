@@ -37,9 +37,9 @@ $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
   simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
 ```
 
-Latest Spark built from source using Maven:
+Latest Spark `3.1.0-SNAPSHOT` built from source using Maven:
 ```
-$ cd ~/dev/apache-github/spark/bin/
+$ cd ~/dev/apache-github/spark/
 $ ./build/mvn -DskipTests clean package
 
 $ ~/dev/apache-github/spark/bin/spark-submit \

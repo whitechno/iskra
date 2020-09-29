@@ -1,5 +1,5 @@
 ThisBuild / version      := "0.1.1" //-SNAPSHOT
-ThisBuild / organization := "com.github.whitechno"
+ThisBuild / organization := "com.github.whitechno.iskra"
 ThisBuild / scalaVersion := library.versions.scala212
 
 /* assembly JAR for spark-submit:
@@ -54,6 +54,19 @@ lazy val `simple-spark-provided` = project
     }
   )
 
+lazy val `spark-runner` = project
+  .settings(
+    commonSettings,
+    libraryDependencies ++= library.spark30provided
+  )
+
+lazy val xgraphx = project
+  .dependsOn(`spark-runner`)
+  .settings(
+    commonSettings,
+    libraryDependencies ++= library.spark30provided
+  )
+
 // List of projects for 'assemblies' task
 lazy val assemblyProjects = List(
   `simple-spark-submit`,
@@ -61,20 +74,24 @@ lazy val assemblyProjects = List(
   `simple-spark-provided`
 )
 
+//
+// Dependencies & Settings
+//
+
 lazy val library = new {
 
   val versions = new {
     val scala211       = "2.11.12"
-    val scala212       = "2.12.11"
-    val spark24        = "2.4.6" // Jun 05, 2020
-    val spark30        = "3.0.0" // Jun 18, 2020
-    val scalatest      = "3.2.1"
+    val scala212       = "2.12.12"
+    val spark24        = "2.4.7"
+    val spark30        = "3.0.1"
+    val scalatest      = "3.2.2"
     val typesafeConfig = "1.4.0"
   }
 
   val supportedScalaVersions = List(versions.scala211, versions.scala212)
 
-  private val sparkLibs = Seq("core", "sql")
+  private val sparkLibs = Seq("core", "sql", "graphx")
   val spark30 = sparkLibs
     .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark30 }
   val spark30provided = spark30.map { _ % "provided" }
@@ -127,3 +144,7 @@ lazy val commonSettings = List(
     "-feature" // [warn] there were 21 feature warnings; re-run with -feature for details
   )
 )
+
+ThisBuild / useCoursier := false
+ThisBuild / resolvers += Resolver.mavenCentral
+ThisBuild / resolvers += Resolver.sbtPluginRepo("releases")

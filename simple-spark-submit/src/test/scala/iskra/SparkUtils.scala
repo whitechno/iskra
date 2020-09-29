@@ -22,7 +22,7 @@ object SparkUtils {
    * to print the entire URL of a Spark application’s web UI.
    */
   def startSpark(
-      master: String             = "local[7]",
+      master: String             = "local[*]",
       appName: String            = "Iskra",
       logErrorLevelOnly: Boolean = true
   ): SparkSession = {
@@ -40,7 +40,7 @@ object SparkUtils {
   }
 
   /**
-   * Counts the size of each partition.
+   * Counts the size of each RDD partition.
    */
   def countByPartition(rdd: RDD[_]): RDD[Int] =
     rdd.mapPartitions { iter => Iterator(iter.length) }

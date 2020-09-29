@@ -3,10 +3,10 @@ package iskra
 import org.apache.spark.sql.SparkSession
 
 /*
-sbt> simple-spark-submit / runMain iskra.SimpleApp local[4]
+sbt> simple-spark-submit / runMain iskra.SimpleApp local[*]
 
  * This doesn't work if we need libraries not provided by Spark:
-$ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
+$ ~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/spark-submit \
   --class "iskra.SimpleApp" \
   simple-spark-submit/target/scala-2.12/simple-spark-submit_2.12-0.1.1.jar
 
@@ -15,13 +15,15 @@ $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
  * Spark-provided libraries have to be marked as '% "provided"':
 sbt> simple-spark-submit / assembly
 $ jar tvf simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
-$ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
+$ ~/dev/apache-github/spark/bin/spark-submit \
   --class "iskra.SimpleApp" \
   simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
 
  * for simple-spark-databricks project:
 sbt> simple-spark-databricks / assembly
 $ jar tvf simple-spark-databricks/target/scala-2.12/simple-spark-databricks-assembly_2.12-0.1.1.jar
+This doesn't work because of
+"Exception in thread "main" java.lang.NoClassDefFoundError: com/typesafe/config/ConfigFactory"
 $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
   --class "iskra.SimpleApp" \
   simple-spark-databricks/target/scala-2.12/simple-spark-databricks-assembly_2.12-0.1.1.jar
@@ -32,10 +34,12 @@ $ jar tvf simple-spark-provided/target/scala-2.12/simple-spark-provided-assembly
 object SimpleApp {
   def main(args: Array[String]) {
     var builder = SparkSession.builder.appName("Simple Application")
+    var stopSparkWhenDone = false
     if (args.length > 0) {
       args.zipWithIndex.foreach(println)
       val master = args(0)
       builder = builder.master(master)
+      stopSparkWhenDone = true
     }
     //builder = builder.master("local")
     val spark = builder.getOrCreate()
@@ -52,7 +56,7 @@ object SimpleApp {
     val numBs   = logData.filter(line => line.contains("b")).count()
     println(s"\n >>> Lines with a: $numAs, Lines with b: $numBs \n")
 
-    spark.stop()
+    if (stopSparkWhenDone) spark.stop()
   }
 
 }
