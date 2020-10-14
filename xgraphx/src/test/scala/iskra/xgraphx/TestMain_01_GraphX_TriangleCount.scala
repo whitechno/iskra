@@ -9,7 +9,7 @@ System.getProperty("user.home"), System.getProperty("user.dir")
 val users: RDD[(Long, User)] = sr.spark.sparkContext.parallelize(dataUsers)
 
 sparkStopWhenDone = true is needed (only!) when run in sbt:
-sbt> xgraphx / test:runMain iskra.xgraphx.TestMain_01_GraphX
+sbt> xgraphx / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
 
     println("vertices:")
     graph.vertices.toDF("id", "attr").sort($"id").show

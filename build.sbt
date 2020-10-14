@@ -130,7 +130,11 @@ lazy val assemblySettings = List(
 // In order to run in SBT we need to put "provided" dependencies back to run classpath:
 lazy val runWithProvidedSettings = List(
   run in Compile := Defaults
-    .runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run))
+    .runTask(
+      fullClasspath in Compile,
+      mainClass in (Compile, run),
+      runner in (Compile, run)
+    )
     .evaluated,
   runMain in Compile := Defaults
     .runMainTask(fullClasspath in Compile, runner in (Compile, run))
