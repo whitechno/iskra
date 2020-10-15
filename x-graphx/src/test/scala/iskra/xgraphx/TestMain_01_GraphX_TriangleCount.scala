@@ -1,7 +1,14 @@
 package iskra.xgraphx
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.graphx.{ Edge, EdgeContext, EdgeTriplet, Graph, VertexId, VertexRDD }
+import org.apache.spark.graphx.{
+  Edge,
+  EdgeContext,
+  EdgeTriplet,
+  Graph,
+  VertexId,
+  VertexRDD
+}
 import iskra.runner.{ RunnerInputSparkConfig, SparkRunner }
 
 /* data/packt/BigDataAnalytics/Chapter10-GraphX
@@ -9,7 +16,7 @@ System.getProperty("user.home"), System.getProperty("user.dir")
 val users: RDD[(Long, User)] = sr.spark.sparkContext.parallelize(dataUsers)
 
 sparkStopWhenDone = true is needed (only!) when run in sbt:
-sbt> xgraphx / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
+sbt> x-graphx / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
 
     println("vertices:")
     graph.vertices.toDF("id", "attr").sort($"id").show
@@ -18,7 +25,8 @@ sbt> xgraphx / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
  */
 object TestMain_01_GraphX_TriangleCount {
   def main(args: Array[String]): Unit = {
-    val risc            = RunnerInputSparkConfig(master = Some("local[*]"), sparkStopWhenDone = true)
+    val risc =
+      RunnerInputSparkConfig(master = Some("local[*]"), sparkStopWhenDone = true)
     val sr: SparkRunner = SparkRunner(risc = risc)
 
     run3(sr)
@@ -49,13 +57,14 @@ object TestMain_01_GraphX_TriangleCount {
     - For each edge compute the intersection of the sets and send the count to both vertices.
     - Compute the sum at each vertex and divide by two since each triangle is counted twice.
      */
-    val neighbors: VertexRDD[Set[VertexId]] = canonicalGraph.aggregateMessages[Set[VertexId]](
-      sendMsg = { (ec: EdgeContext[User, Int, Set[VertexId]]) =>
-        ec.sendToDst(msg = Set(ec.srcId))
-        ec.sendToSrc(msg = Set(ec.dstId))
-      },
-      mergeMsg = _ ++ _
-    )
+    val neighbors: VertexRDD[Set[VertexId]] =
+      canonicalGraph.aggregateMessages[Set[VertexId]](
+        sendMsg = { (ec: EdgeContext[User, Int, Set[VertexId]]) =>
+          ec.sendToDst(msg = Set(ec.srcId))
+          ec.sendToSrc(msg = Set(ec.dstId))
+        },
+        mergeMsg = _ ++ _
+      )
     println("Neighbors:")
     neighbors.toDF("id", "attr").sort($"id").show
 
@@ -68,19 +77,30 @@ object TestMain_01_GraphX_TriangleCount {
     graph2.edges.toDF.sort($"srcId", $"dstId").show(numRows = 100)
 
     val allTriangles: RDD[(VertexId, VertexId, VertexId)] =
-      graph2.edges.filter(_.attr.nonEmpty).flatMap { edge =>
-        edge.attr.map { vid =>
-          mkCanonicalTriangle(vid = vid, neighbours = (edge.srcId, edge.dstId))
-        }.toSeq
-      }.distinct()
+      graph2.edges
+        .filter(_.attr.nonEmpty)
+        .flatMap { edge =>
+          edge.attr.map { vid =>
+            mkCanonicalTriangle(vid = vid, neighbours = (edge.srcId, edge.dstId))
+          }.toSeq
+        }
+        .distinct()
     println("allTriangles:")
-    allTriangles.toDF("vid1", "vid2", "vid3").sort($"vid1", $"vid2", $"vid3").show(numRows = 100)
+    allTriangles
+      .toDF("vid1", "vid2", "vid3")
+      .sort($"vid1", $"vid2", $"vid3")
+      .show(numRows = 100)
 
     val triangleNeighbors: VertexRDD[Set[(VertexId, VertexId)]] =
       graph2.aggregateMessages[Set[(VertexId, VertexId)]](
-        sendMsg = { (ec: EdgeContext[Set[VertexId], Set[VertexId], Set[(VertexId, VertexId)]]) =>
-          ec.sendToDst(msg = mkTriangleNeighborsMessage(ec.srcId, ec.attr))
-          ec.sendToSrc(msg = mkTriangleNeighborsMessage(ec.dstId, ec.attr))
+        sendMsg = {
+          (ec: EdgeContext[
+            Set[VertexId],
+            Set[VertexId],
+            Set[(VertexId, VertexId)]
+          ]) =>
+            ec.sendToDst(msg = mkTriangleNeighborsMessage(ec.srcId, ec.attr))
+            ec.sendToSrc(msg = mkTriangleNeighborsMessage(ec.dstId, ec.attr))
         },
         mergeMsg = _ ++ _
       )
@@ -95,7 +115,10 @@ object TestMain_01_GraphX_TriangleCount {
 
   }
 
-  def mkTriangleNeighborsMessage(vid: VertexId, attr: Set[VertexId]): Set[(VertexId, VertexId)] = {
+  def mkTriangleNeighborsMessage(
+      vid: VertexId,
+      attr: Set[VertexId]
+  ): Set[(VertexId, VertexId)] = {
     attr.map { vid2 => if (vid <= vid2) (vid, vid2) else (vid2, vid) }
   }
   def mkCanonicalTriangle(
@@ -123,9 +146,8 @@ object TestMain_01_GraphX_TriangleCount {
       }
       .toDS
       .show
-    val triangleEdges: RDD[EdgeTriplet[Int, String]] = triangleCounts.triplets.filter { tr =>
-      tr.srcAttr > 0 && tr.dstAttr > 0
-    }
+    val triangleEdges: RDD[EdgeTriplet[Int, String]] =
+      triangleCounts.triplets.filter { tr => tr.srcAttr > 0 && tr.dstAttr > 0 }
     triangleEdges.map(_.toTuple).toDS.show(truncate = false, numRows = 100)
 
     triangleCounts
@@ -167,21 +189,24 @@ object TestMain_01_GraphX_TriangleCount {
   def readData(sr: SparkRunner): Graph[User, String] = {
     import sr.spark.implicits._
     val dataPath =
-      System.getProperty("user.dir") + "/xgraphx/data/packt/BigDataAnalytics/Chapter10-GraphX/"
+      System.getProperty("user.dir") +
+        "/x-graphx/data/packt/BigDataAnalytics/Chapter10-GraphX/"
 
     val usersPath = dataPath + "users.txt"
     //println(usersPath)
-    val users: RDD[(Long, User)] = sr.spark.sparkContext.textFile(usersPath).map { line =>
-      val fields = line.split(",")
-      fields(0).toLong -> User(name = fields(1), occupation = fields(2))
-    }
+    val users: RDD[(Long, User)] =
+      sr.spark.sparkContext.textFile(usersPath).map { line =>
+        val fields = line.split(",")
+        fields(0).toLong -> User(name = fields(1), occupation = fields(2))
+      }
 
     val friendsPath = dataPath + "friends.txt"
     //println(friendsPath)
-    val friends: RDD[Edge[String]] = sr.spark.sparkContext.textFile(friendsPath).map { line =>
-      val fields = line.split(",")
-      Edge(srcId = fields(0).toLong, dstId = fields(1).toLong, attr = "friend")
-    }
+    val friends: RDD[Edge[String]] =
+      sr.spark.sparkContext.textFile(friendsPath).map { line =>
+        val fields = line.split(",")
+        Edge(srcId = fields(0).toLong, dstId = fields(1).toLong, attr = "friend")
+      }
 
     val graph: Graph[User, String] = Graph(vertices = users, edges = friends)
     println("vertices:")
