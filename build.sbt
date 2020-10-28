@@ -93,7 +93,7 @@ lazy val library = new {
     val spark24        = "2.4.7"
     val spark30        = "3.0.1"
     val scalatest      = "3.2.2"
-    val typesafeConfig = "1.4.0"
+    val typesafeConfig = "1.4.1"
   }
 
   val supportedScalaVersions = List(versions.scala211, versions.scala212)

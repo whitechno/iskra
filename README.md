@@ -4,6 +4,14 @@ Spark eXperiments
 Spark official resources
 ------------------------
 
+- Spark releases  
+  https://github.com/apache/spark/releases
+  - 3.0.1 - Aug 27, 2020
+  - 3.0.0 - Jun 05, 2020
+  - 2.4.7 - Sep 07, 2020
+  - 2.4.6 - May 29, 2020
+  - 2.4.5 - Feb 02, 2020
+
 - [Download Apache Spark](
 https://spark.apache.org/downloads.html
 )
