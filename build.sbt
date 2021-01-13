@@ -92,6 +92,7 @@ lazy val library = new {
     val scala212       = "2.12.12"
     val spark24        = "2.4.7"
     val spark30        = "3.0.1"
+    val spark31        = "3.1.0-rc1"
     val scalatest      = "3.2.3"
     val typesafeConfig = "1.4.1"
   }
@@ -102,6 +103,9 @@ lazy val library = new {
   val spark30 = sparkLibs
     .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark30 }
   val spark30provided = spark30.map { _ % "provided" }
+  val spark31 = sparkLibs
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark31 }
+  val spark31provided = spark31.map { _ % "provided" }
 
   val scalatest      = "org.scalatest" %% "scalatest" % versions.scalatest
   val typesafeConfig = "com.typesafe"   % "config"    % versions.typesafeConfig
@@ -125,7 +129,8 @@ assemblies := Def.taskDyn {
   assembly.all(ScopeFilter(assemblyProjectFilter.value))
 }.value
 
-// add these settings to projects for which assembly JARs are supposed to be generated
+// add these settings to projects for which assembly JARs
+// are supposed to be generated
 lazy val assemblySettings = List(
   test in assembly := {},
   assemblyOption in assembly :=
@@ -134,7 +139,8 @@ lazy val assemblySettings = List(
     s"${name.value}-assembly_${scalaBinaryVersion.value}-${version.value}.jar"
 )
 
-// In order to run in SBT we need to put "provided" dependencies back to run classpath:
+// In order to run in SBT we need to put "provided"
+// dependencies back to run classpath:
 lazy val runWithProvidedSettings = List(
   run in Compile := Defaults
     .runTask(
@@ -152,7 +158,7 @@ lazy val commonSettings = List(
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
-    "-feature" // [warn] there were 21 feature warnings; re-run with -feature for details
+    "-feature"
   )
 )
 
