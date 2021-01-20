@@ -41,7 +41,7 @@ object SimpleApp {
       builder = builder.master(master)
       stopSparkWhenDone = true
     }
-    //builder = builder.master("local")
+    else builder = builder.master("local")
     val spark = builder.getOrCreate()
 
     // to check if com.typesafe.config is available ar run time:
