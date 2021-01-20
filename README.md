@@ -6,7 +6,7 @@ Spark official resources
 
 - Spark releases  
   https://github.com/apache/spark/releases
-  - 3.1.0-rc1 - Jan 05, 2021
+  - 3.1.0 - Jan 05, 2021
   - 3.0.1 - Aug 27, 2020
   - 3.0.0 - Jun 05, 2020
   - 2.4.7 - Sep 07, 2020

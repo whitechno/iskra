@@ -9,7 +9,7 @@ lazy val `simple-spark-submit` = project
   .settings(
     commonSettings,
     assemblySettings,
-    libraryDependencies ++= library.spark30provided,
+    libraryDependencies ++= library.spark31provided,
     libraryDependencies += library.typesafeConfig,
     // In order to run in SBT (as opposed to using 'spark-submit')
     // sbt> simple-spark-submit / runMain iskra.SimpleApp local[4]
@@ -37,7 +37,7 @@ lazy val `simple-spark-databricks` = project
 
 /* assembly JAR with some `simple-spark-submit` dependencies excluded
 the result is exactly the same assembly JAR as for `simple-spark-databricks`
-but done in a slightly more general wasy
+but done in a slightly more general way
  */
 lazy val `simple-spark-provided` = project
   .dependsOn(`simple-spark-submit`)
@@ -57,21 +57,21 @@ lazy val `simple-spark-provided` = project
 lazy val `spark-runner` = project
   .settings(
     commonSettings,
-    libraryDependencies ++= library.spark30provided
+    libraryDependencies ++= library.spark31provided
   )
 
 lazy val `x-graphx` = project
   .dependsOn(`spark-runner`)
   .settings(
     commonSettings,
-    libraryDependencies ++= library.spark30provided
+    libraryDependencies ++= library.spark31provided
   )
 
 lazy val `x-csv` = project
   .dependsOn(`spark-runner`)
   .settings(
     commonSettings,
-    libraryDependencies ++= library.spark30provided
+    libraryDependencies ++= library.spark31provided
   )
 
 // List of projects for 'assemblies' task
@@ -89,10 +89,10 @@ lazy val library = new {
 
   val versions = new {
     val scala211       = "2.11.12"
-    val scala212       = "2.12.12"
+    val scala212       = "2.12.13"
     val spark24        = "2.4.7"
     val spark30        = "3.0.1"
-    val spark31        = "3.1.0-rc1"
+    val spark31        = "3.1.0"
     val scalatest      = "3.2.3"
     val typesafeConfig = "1.4.1"
   }
