@@ -92,8 +92,8 @@ lazy val library = new {
     val scala212       = "2.12.13"
     val spark24        = "2.4.7"
     val spark30        = "3.0.2"
-    val spark31        = "3.1.0"
-    val scalatest      = "3.2.4"
+    val spark31        = "3.1.1"
+    val scalatest      = "3.2.6"
     val typesafeConfig = "1.4.1"
   }
 
