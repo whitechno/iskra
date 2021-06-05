@@ -53,31 +53,91 @@ $ ~/dev/apache-github/spark/bin/spark-submit \
 
 Downloaded pre-built Spark packages:
 
-- 3.1.1 (Hadoop 2.7.4) (Mar 02, 2021)  
-  `$ cd ~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
+- 3.1
+    - 3.1.2 (Hadoop 3.2.0) (Jun 01, 2021)  
+      `$ cd ~/dev/spark-bin/spark-3.1.2-bin-hadoop3.2/bin/`
+    - 3.1.1 (Hadoop 2.7.4) (Mar 02, 2021)  
+      `$ cd ~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
+- 3.0
+    - 3.0.2 (Feb 19, 2021)  
+      `$ cd ~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
+    - 3.0.1  
+      `$ cd ~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
+    - 3.0.0 (Hadoop 2.7.4)
+      ```
+      $ cd ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
+        Spark 3.0.0 (git revision 3fdfce3120) built for Hadoop 2.7.4  
+        Build flags:  
+        -B -Pmesos -Pyarn -Pkubernetes -Psparkr -Pscala-2.12 -Phadoop-2.7  
+        -Phive -Phive-thriftserver -DzincPort=3036
+      
+      $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
+        --class "SimpleApp" \
+        --master local[4] \
+        simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
+      ```
+- 2.4
+    - 2.4.8 (Hadoop 2.7.3) (May 17, 2021)  
+      `$ cd ~/dev/spark-bin/spark-2.4.8-bin-hadoop2.7/bin/`
+    - 2.4.7 (Hadoop 2.7.3) (Sep 12, 2020)  
+      `$ cd ~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
 
-- 3.0.2 (Feb 19, 2021)  
-  `$ cd ~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
+Hadoop
+------
+[Releases Archive](https://hadoop.apache.org/release.html)
 
-- 3.0.1  
-  `$ cd ~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
+- 3.3
+    - 3.3.0 - Jul 14, 2020
+- 3.2
+    - 3.2.2 - Jan 09, 2021
+    - 3.2.1 - Sep 22, 2019
+    - 3.2.0 - Jan 16, 2019 (stable) (Spark 3)
+- 3.1
+    - 3.1.4 - Aug 03, 2020
+    - 3.1.3 - Oct 21, 2019
+    - 3.1.2 - Feb 06, 2019
+    - 3.1.1 - Aug 08, 2018 (stable)
+    - 3.1.0 - Apr 06, 2018
+- 3.0
+    - 3.0.3 - May 31, 2018
+    - 3.0.2 - Apr 21, 2018
+    - 3.0.1 - Mar 25, 2018
+    - 3.0.0 - Dec 13, 2017
+- 2.10
+    - 2.10.1 - Sep 21, 2020
+    - 2.10.0 - Oct 29, 2019 (stable)
+- 2.9
+    - 2.9.2 - Nov 19, 2018
+    - 2.9.1 - May 03, 2018
+    - 2.9.0 - Dec 17, 2017
+- 2.8
+    - 2.8.5 - Sep 15, 2018
+    - 2.8.4 - May 15, 2018
+    - 2.8.3 - Dec 12, 2017
+    - 2.8.2 - Oct 24, 2017
+    - 2.8.1 - Jun 08, 2017
+    - 2.8.0 - Mar 22, 2017
+- 2.7
+    - 2.7.7 - May 31, 2018
+    - 2.7.6 - Apr 16, 2018
+    - 2.7.5 - Dec 14, 2017
+    - 2.7.4 - Aug 04, 2017 (Spark 3)
+    - 2.7.3 - Aug 26, 2016 (Spark 2.4)
+    - 2.7.2 - Jan 25, 2016
+    - 2.7.1 - Jul 06, 2015 (stable)
+    - 2.7.0 - Apr 21, 2015
 
-- 3.0.0 (Hadoop 2.7.4)
-  ```
-  $ cd ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
-    Spark 3.0.0 (git revision 3fdfce3120) built for Hadoop 2.7.4  
-    Build flags:  
-    -B -Pmesos -Pyarn -Pkubernetes -Psparkr -Pscala-2.12 -Phadoop-2.7  
-    -Phive -Phive-thriftserver -DzincPort=3036
-  
-  $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
-    --class "SimpleApp" \
-    --master local[4] \
-    simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
-  ```
+Maven
+-----
 
-- 2.4.7 (Hadoop 2.7.3) (Sep 12, 2020)
-  `$ cd ~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
+- [Maven Releases History](
+  https://maven.apache.org/docs/history.html
+  )
+    - 3.8.1 - 2021-04-04
+    - 3.6.3 - 2019-11-25
+    - 3.6.2 - 2019-08-27
+    - 3.6.1 - 2019-04-04
+    - 3.6.0 - 2018-10-24
 
 Spark submit, provided dependencies and assembly packages
 ---------------------------------------------------------
@@ -109,17 +169,6 @@ Spark submit, provided dependencies and assembly packages
 - [Setting up a Spark machine learning project with Scala, sbt and MLlib](
   https://medium.com/@pedrodc/setting-up-a-spark-machine-learning-project-with-scala-sbt-and-mllib-831c329907ea
   ) Jan 2019
-
-Maven
------
-
-- [Maven Releases History](
-  https://maven.apache.org/docs/history.html
-  )
-    - 3.6.3 - 2019-11-25
-    - 3.6.2 - 2019-08-27
-    - 3.6.1 - 2019-04-04
-    - 3.6.0 - 2018-10-24
 
 Other resources
 ---------------
