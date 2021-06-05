@@ -132,36 +132,32 @@ assemblies := Def.taskDyn {
 // add these settings to projects for which assembly JARs
 // are supposed to be generated
 lazy val assemblySettings = List(
-  test in assembly := {},
-  assemblyOption in assembly :=
-    (assemblyOption in assembly).value.copy(includeScala = false),
-  assemblyJarName in assembly :=
+  assembly / test := {},
+  assembly / assemblyOption :=
+    (assembly / assemblyOption).value.copy(includeScala = false),
+  assembly / assemblyJarName :=
     s"${name.value}-assembly_${scalaBinaryVersion.value}-${version.value}.jar"
 )
 
 // In order to run in SBT we need to put "provided"
 // dependencies back to run classpath:
 lazy val runWithProvidedSettings = List(
-  run in Compile := Defaults
+  Compile / run := Defaults
     .runTask(
-      fullClasspath in Compile,
-      mainClass in (Compile, run),
-      runner in (Compile, run)
+      Compile / fullClasspath,
+      Compile / run / mainClass,
+      Compile / run / runner
     )
     .evaluated,
-  runMain in Compile := Defaults
-    .runMainTask(fullClasspath in Compile, runner in (Compile, run))
+  Compile / runMain := Defaults
+    .runMainTask(Compile / fullClasspath, Compile / run / runner)
     .evaluated
 )
 
 lazy val commonSettings = List(
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-unchecked",
-    "-feature"
-  )
+  scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 )
 
-ThisBuild / useCoursier := false
+//ThisBuild / useCoursier := false
 ThisBuild / resolvers += Resolver.mavenCentral
 ThisBuild / resolvers += Resolver.sbtPluginRepo("releases")
