@@ -6,14 +6,19 @@ Spark official resources
 
 - Spark releases  
   https://github.com/apache/spark/releases
-    - 3.1.1 - Feb 21, 2021
-    - 3.1.0 - Jan 05, 2021
-    - 3.0.2 - Feb 19, 2021
-    - 3.0.1 - Aug 27, 2020
-    - 3.0.0 - Jun 05, 2020
-    - 2.4.7 - Sep 07, 2020
-    - 2.4.6 - May 29, 2020
-    - 2.4.5 - Feb 02, 2020
+    - 3.1
+        - 3.1.2 - May 23, 2021
+        - 3.1.1 - Feb 21, 2021
+        - 3.1.0 - Jan 05, 2021
+    - 3.0
+        - 3.0.2 - Feb 19, 2021
+        - 3.0.1 - Aug 27, 2020
+        - 3.0.0 - Jun 05, 2020
+    - 2.4
+        - 2.4.8 - May 09, 2021
+        - 2.4.7 - Sep 07, 2020
+        - 2.4.6 - May 29, 2020
+        - 2.4.5 - Feb 02, 2020
 
 - [Download Apache Spark](
   https://spark.apache.org/downloads.html
@@ -34,21 +39,6 @@ Spark official resources
 Project notes
 -------------
 
-Downloaded pre-built Spark packages:
-
-```
-$ cd ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
-  Spark 3.0.0 (git revision 3fdfce3120) built for Hadoop 2.7.4  
-  Build flags:  
-  -B -Pmesos -Pyarn -Pkubernetes -Psparkr -Pscala-2.12 -Phadoop-2.7  
-  -Phive -Phive-thriftserver -DzincPort=3036
-
-$ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
-  --class "SimpleApp" \
-  --master local[4] \
-  simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
-```
-
 Latest Spark `3.2.0-SNAPSHOT` built from source using Maven:
 
 ```
@@ -61,12 +51,40 @@ $ ~/dev/apache-github/spark/bin/spark-submit \
   simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
 ```
 
-- [sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later](
-  https://stackoverflow.com/questions/34015452/sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later
-  )
+Downloaded pre-built Spark packages:
+
+- 3.1.1 (Hadoop 2.7.4) (Mar 02, 2021)  
+  `$ cd ~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
+
+- 3.0.2 (Feb 19, 2021)  
+  `$ cd ~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
+
+- 3.0.1  
+  `$ cd ~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
+
+- 3.0.0 (Hadoop 2.7.4)
+  ```
+  $ cd ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
+    Spark 3.0.0 (git revision 3fdfce3120) built for Hadoop 2.7.4  
+    Build flags:  
+    -B -Pmesos -Pyarn -Pkubernetes -Psparkr -Pscala-2.12 -Phadoop-2.7  
+    -Phive -Phive-thriftserver -DzincPort=3036
+  
+  $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
+    --class "SimpleApp" \
+    --master local[4] \
+    simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
+  ```
+
+- 2.4.7 (Hadoop 2.7.3) (Sep 12, 2020)
+  `$ cd ~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
 
 Spark submit, provided dependencies and assembly packages
 ---------------------------------------------------------
+
+- [sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later](
+  https://stackoverflow.com/questions/34015452/sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later
+  )
 
 - [sbt-spark-package](
   https://github.com/databricks/sbt-spark-package
