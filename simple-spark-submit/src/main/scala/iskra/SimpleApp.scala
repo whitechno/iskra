@@ -32,7 +32,7 @@ $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
 $ jar tvf simple-spark-provided/target/scala-2.12/simple-spark-provided-assembly_2.12-0.1.1.jar
  */
 object SimpleApp {
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     var builder = SparkSession.builder.appName("Simple Application")
     var stopSparkWhenDone = false
     if (args.length > 0) {
