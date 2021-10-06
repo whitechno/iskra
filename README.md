@@ -88,6 +88,7 @@ Hadoop
 [Releases Archive](https://hadoop.apache.org/release.html)
 
 - 3.3
+    - 3.3.1 - Jun 15, 2021
     - 3.3.0 - Jul 14, 2020
 - 3.2
     - 3.2.2 - Jan 09, 2021
