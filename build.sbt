@@ -89,11 +89,11 @@ lazy val library = new {
 
   val versions = new {
     val scala211       = "2.11.12"
-    val scala212       = "2.12.14"
+    val scala212       = "2.12.15"
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.2"
-    val scalatest      = "3.2.9"
+    val scalatest      = "3.2.10"
     val typesafeConfig = "1.4.1"
   }
 
@@ -132,7 +132,7 @@ assemblies := Def.taskDyn {
 // add these settings to projects for which assembly JARs
 // are supposed to be generated
 lazy val assemblySettings = List(
-  //assembly / test := {},
+  // assembly / test := {},
   assembly / assemblyOption ~= { _.withIncludeScala(includeScala = false) },
   assembly / assemblyJarName :=
     s"${name.value}-assembly_${scalaBinaryVersion.value}-${version.value}.jar"
