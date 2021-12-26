@@ -16,6 +16,10 @@ case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) 
     var builder: SparkSession.Builder = SparkSession.builder
     risc.master.foreach { master => builder = builder.master(master) }
     risc.appName.foreach { name => builder = builder.appName(name = name) }
+
+    builder = builder.config("spark.ui.enabled", "false")
+    builder = builder.config("spark.driver.allowMultipleContexts", "false")
+
     val sparkSession: SparkSession = builder.getOrCreate
 
     println(
@@ -25,7 +29,9 @@ case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) 
         sparkSession.conf.get(key = "spark.master", default = "-") +
         " with " + sparkSession.sparkContext.defaultParallelism + " cores" +
         " ***\n" +
-        sparkSession.sparkContext.uiWebUrl.map("\tuiWebUrl at " + _ + "\n").getOrElse("")
+        sparkSession.sparkContext.uiWebUrl
+          .map("\tuiWebUrl at " + _ + "\n")
+          .getOrElse("")
     )
 
     sparkSession

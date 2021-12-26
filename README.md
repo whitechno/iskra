@@ -42,7 +42,7 @@ Spark official resources
 Project notes
 -------------
 
-Latest Spark `3.2.0-SNAPSHOT` built from source using Maven:
+Latest Spark `3.3.0-SNAPSHOT` built from source using Maven:
 
 ```
 $ cd ~/dev/apache-github/spark/

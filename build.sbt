@@ -60,6 +60,13 @@ lazy val `spark-runner` = project
     libraryDependencies ++= library.spark3provided
   )
 
+lazy val `x-csv` = project
+  .dependsOn(`spark-runner`)
+  .settings(
+    commonSettings,
+    libraryDependencies ++= library.spark3provided
+  )
+
 lazy val `x-graphx` = project
   .dependsOn(`spark-runner`)
   .settings(
@@ -67,7 +74,7 @@ lazy val `x-graphx` = project
     libraryDependencies ++= library.spark3provided
   )
 
-lazy val `x-csv` = project
+lazy val `x-graphx-packt` = project
   .dependsOn(`spark-runner`)
   .settings(
     commonSettings,

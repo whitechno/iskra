@@ -16,7 +16,7 @@ System.getProperty("user.home"), System.getProperty("user.dir")
 val users: RDD[(Long, User)] = sr.spark.sparkContext.parallelize(dataUsers)
 
 sparkStopWhenDone = true is needed (only!) when run in sbt:
-sbt> x-graphx / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
+sbt> x-graphx-packt / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
 
     println("vertices:")
     graph.vertices.toDF("id", "attr").sort($"id").show
@@ -29,6 +29,8 @@ object TestMain_01_GraphX_TriangleCount {
       RunnerInputSparkConfig(master = Some("local[*]"), sparkStopWhenDone = true)
     val sr: SparkRunner = SparkRunner(risc = risc)
 
+//    run1(sr)
+//    run2(sr)
     run3(sr)
 
     sr.stopSpark()
@@ -42,7 +44,7 @@ object TestMain_01_GraphX_TriangleCount {
 
     /* CanonicalGraph
         - There are no self edges
-        - All edges are oriented (src is greater than dst)
+        - All edges are oriented (src is smaller than dst)
         - There are no duplicate edges
      */
     println("CanonicalGraph edges:")
@@ -94,11 +96,7 @@ object TestMain_01_GraphX_TriangleCount {
     val triangleNeighbors: VertexRDD[Set[(VertexId, VertexId)]] =
       graph2.aggregateMessages[Set[(VertexId, VertexId)]](
         sendMsg = {
-          (ec: EdgeContext[
-            Set[VertexId],
-            Set[VertexId],
-            Set[(VertexId, VertexId)]
-          ]) =>
+          ec: EdgeContext[Set[VertexId], Set[VertexId], Set[(VertexId, VertexId)]] =>
             ec.sendToDst(msg = mkTriangleNeighborsMessage(ec.srcId, ec.attr))
             ec.sendToSrc(msg = mkTriangleNeighborsMessage(ec.dstId, ec.attr))
         },
@@ -110,6 +108,7 @@ object TestMain_01_GraphX_TriangleCount {
     val triangleCounts: VertexRDD[Int] = triangleNeighbors.mapValues(_.size)
     println("triangleCounts:")
     triangleCounts.toDF("id", "attr").sort($"id").show(truncate = false)
+
     val totalTriangleCounts = triangleCounts.map(_._2).reduce(_ + _) / 3
     println("totalTriangleCounts = " + totalTriangleCounts)
 
@@ -137,14 +136,15 @@ object TestMain_01_GraphX_TriangleCount {
     // triangleCounts
     val triangleCounts: Graph[Int, String] = graph.triangleCount
     println("\ntriangleCounts:")
-    triangleCounts.vertices.toDS.show
-    triangleCounts.edges.toDS.show
+    triangleCounts.vertices.toDF("vid", "triangleCnt").sort('vid).show
+    triangleCounts.edges.toDS.sort('srcId, 'dstId).show(numRows = 100)
     users
       .join(other = triangleCounts.vertices)
-      .map { case (vid, (User(name, occupation), k)) =>
-        (vid, name, occupation, k)
+      .map { case (vid, (User(name, occupation), triangleCnt)) =>
+        (vid, name, occupation, triangleCnt)
       }
-      .toDS
+      .toDF("vid", "name", "occupation", "triangleCnt")
+      .sort('vid)
       .show
     val triangleEdges: RDD[EdgeTriplet[Int, String]] =
       triangleCounts.triplets.filter { tr => tr.srcAttr > 0 && tr.dstAttr > 0 }
@@ -183,36 +183,40 @@ object TestMain_01_GraphX_TriangleCount {
     val aggRDD: RDD[(Long, Int)] = aggregatedMessages.map { case (vid, msg) =>
       vid.toLong -> msg.toInt
     }
-    aggRDD.toDF.show
+    aggRDD.toDF("vid", "inDegree").sort('vid).show
   }
 
   def readData(sr: SparkRunner): Graph[User, String] = {
     import sr.spark.implicits._
     val dataPath =
       System.getProperty("user.dir") +
-        "/x-graphx/data/packt/BigDataAnalytics/Chapter10-GraphX/"
+        "/x-graphx-packt/data/packt/BigDataAnalytics/Chapter10-GraphX/"
 
     val usersPath = dataPath + "users.txt"
-    //println(usersPath)
+    // println(usersPath)
     val users: RDD[(Long, User)] =
       sr.spark.sparkContext.textFile(usersPath).map { line =>
-        val fields = line.split(",")
-        fields(0).toLong -> User(name = fields(1), occupation = fields(2))
+        // val fields = line.split(",")
+        // fields(0).toLong -> User(name = fields(1), occupation = fields(2))
+        val id :: name :: occupation :: Nil = line.split(",").toList
+        id.toLong -> User(name = name, occupation = occupation)
       }
 
     val friendsPath = dataPath + "friends.txt"
-    //println(friendsPath)
+    // println(friendsPath)
     val friends: RDD[Edge[String]] =
       sr.spark.sparkContext.textFile(friendsPath).map { line =>
-        val fields = line.split(",")
-        Edge(srcId = fields(0).toLong, dstId = fields(1).toLong, attr = "friend")
+        // val fields = line.split(",")
+        // Edge(srcId = fields(0).toLong, dstId = fields(1).toLong, attr = "friend")
+        val srcId :: dstId :: _ = line.split(",").toList
+        Edge[String](srcId = srcId.toLong, dstId = dstId.toLong)
       }
 
     val graph: Graph[User, String] = Graph(vertices = users, edges = friends)
     println("vertices:")
-    graph.vertices.toDF("id", "attr").sort($"id").show
+    graph.vertices.toDF("id", "attr").sort('id).show
     println("edges:")
-    graph.edges.toDF.sort($"srcId", $"dstId").show(numRows = 100)
+    graph.edges.toDS.sort('srcId, 'dstId).show(numRows = 100)
     graph
   }
 }
