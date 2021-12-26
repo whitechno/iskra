@@ -9,7 +9,7 @@ lazy val `simple-spark-submit` = project
   .settings(
     commonSettings,
     assemblySettings,
-    libraryDependencies ++= library.spark31provided,
+    libraryDependencies ++= library.spark3provided,
     libraryDependencies += library.typesafeConfig,
     // In order to run in SBT (as opposed to using 'spark-submit')
     // sbt> simple-spark-submit / runMain iskra.SimpleApp local[4]
@@ -57,21 +57,21 @@ lazy val `simple-spark-provided` = project
 lazy val `spark-runner` = project
   .settings(
     commonSettings,
-    libraryDependencies ++= library.spark31provided
+    libraryDependencies ++= library.spark3provided
   )
 
 lazy val `x-graphx` = project
   .dependsOn(`spark-runner`)
   .settings(
     commonSettings,
-    libraryDependencies ++= library.spark31provided
+    libraryDependencies ++= library.spark3provided
   )
 
 lazy val `x-csv` = project
   .dependsOn(`spark-runner`)
   .settings(
     commonSettings,
-    libraryDependencies ++= library.spark31provided
+    libraryDependencies ++= library.spark3provided
   )
 
 // List of projects for 'assemblies' task
@@ -93,6 +93,7 @@ lazy val library = new {
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.2"
+    val spark32        = "3.2.0"
     val scalatest      = "3.2.10"
     val typesafeConfig = "1.4.1"
   }
@@ -100,12 +101,9 @@ lazy val library = new {
   val supportedScalaVersions = List(versions.scala211, versions.scala212)
 
   private val sparkLibs = Seq("core", "sql", "graphx")
-  val spark30 = sparkLibs
-    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark30 }
-  val spark30provided = spark30.map { _ % "provided" }
-  val spark31 = sparkLibs
-    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark31 }
-  val spark31provided = spark31.map { _ % "provided" }
+  val spark3 = sparkLibs
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark32 }
+  val spark3provided = spark3.map { _ % "provided" }
 
   val scalatest      = "org.scalatest" %% "scalatest" % versions.scalatest
   val typesafeConfig = "com.typesafe"   % "config"    % versions.typesafeConfig
