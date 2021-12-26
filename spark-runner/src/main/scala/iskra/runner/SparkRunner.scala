@@ -13,14 +13,14 @@ case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) 
     if (risc.logErrorLevelOnly)
       Logger.getLogger("org.apache").setLevel(Level.ERROR)
 
-    var builder: SparkSession.Builder = SparkSession.builder
+    var builder: SparkSession.Builder = SparkSession.builder()
     risc.master.foreach { master => builder = builder.master(master) }
     risc.appName.foreach { name => builder = builder.appName(name = name) }
 
     builder = builder.config("spark.ui.enabled", "false")
     builder = builder.config("spark.driver.allowMultipleContexts", "false")
 
-    val sparkSession: SparkSession = builder.getOrCreate
+    val sparkSession: SparkSession = builder.getOrCreate()
 
     println(
       "\n\t*** Spark " +

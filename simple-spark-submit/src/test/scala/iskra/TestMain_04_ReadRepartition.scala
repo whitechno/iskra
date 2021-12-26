@@ -19,14 +19,14 @@ object TestMain_04_ReadRepartition {
     import org.apache.spark.sql.functions.expr
 
     val sds: Dataset[RunData] = spark.read.parquet(srcPath).as[RunData]
-    println("count=" + sds.count)
+    println("count=" + sds.count())
     sds.show(truncate                                = false)
     sds.mapPartitions(RunData.grByCid).show(truncate = false)
 
     // count records for each cid
     val cidCntSDS: Dataset[CidCnt] =
       sds.groupBy($"id.cid").agg(expr("COUNT(1) cnt")).as[CidCnt]
-    val cidCnts: Seq[CidCnt] = cidCntSDS.collect.toList
+    val cidCnts: Seq[CidCnt] = cidCntSDS.collect().toList
 
     // get partitioner based on counts per cid
     val partitioner = CustomPartitionerII(cidCnts = cidCnts, cntPerPartition = 50000)
@@ -37,8 +37,8 @@ object TestMain_04_ReadRepartition {
     val rdd: RDD[(StructuredID, RunData)] =
       sds.rdd.map { runData => (runData.id, runData) }
     val rddPartitionBy                   = rdd.partitionBy(partitioner = partitioner)
-    val sdsPartitionBy: Dataset[RunData] = rddPartitionBy.map(_._2).toDS
-    //sdsPartitionBy.show(truncate                                = false)
+    val sdsPartitionBy: Dataset[RunData] = rddPartitionBy.map(_._2).toDS()
+    // sdsPartitionBy.show(truncate = false)
     sdsPartitionBy
       .mapPartitions(RunData.grByCid)
       .show(truncate = false, numRows = partitioner.numPartitions)

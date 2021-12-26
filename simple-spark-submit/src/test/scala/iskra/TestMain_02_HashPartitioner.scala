@@ -8,7 +8,12 @@ package iskra
 //import org.apache.parquet.hadoop.metadata.CompressionCodecName
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ HashPartitioner, Partitioner, RangePartitioner, SparkContext }
+import org.apache.spark.{
+  HashPartitioner,
+  Partitioner,
+  RangePartitioner,
+  SparkContext
+}
 import org.apache.spark.sql.{ Dataset, SparkSession }
 import SparkUtils._
 
@@ -22,9 +27,8 @@ object TestMain_02_HashPartitioner {
   }
 
   /**
-   * Dataset[V] can be first converted to pair RDD[(K,V)],
-   * then partitioned by partitionBy with HashPartitioner,
-   * and then transformed back to Dataset[V].
+   * Dataset[V] can be first converted to pair RDD[(K,V)], then partitioned by
+   * partitionBy with HashPartitioner, and then transformed back to Dataset[V].
    */
   private case class Run2Data(x: Int, y: Int)
   def run2(spark: SparkSession): Unit = {
@@ -34,13 +38,13 @@ object TestMain_02_HashPartitioner {
       x <- 1 to 3
       y <- 1 to 7
     } yield Run2Data(x, y)
-    val sds: Dataset[Run2Data] = data.toDS
+    val sds: Dataset[Run2Data] = data.toDS()
     sds.show(numRows = data.length)
 
     val rdd: RDD[(Int, Run2Data)] = sds.rdd.map { r2d => (r2d.x, r2d) }
     println("partitioner=" + rdd.partitioner)
     println("NumPartitions=" + rdd.getNumPartitions)
-    println("rdd: " + countByPartition(rdd).collect.toList)
+    println("rdd: " + countByPartition(rdd).collect().toList)
 
     val rp: RangePartitioner[Int, Run2Data] =
       new RangePartitioner(3, rdd)
@@ -49,23 +53,25 @@ object TestMain_02_HashPartitioner {
       .partitionBy(new HashPartitioner(partitions = 1))
       .map(_._2)
     println(
-      "rddOnePartition: " + countByPartition(rddOnePartition).collect.toList
+      "rddOnePartition: " + countByPartition(rddOnePartition).collect().toList
     )
 
     val rddTwoPartitions: RDD[Run2Data] = rdd
       .partitionBy(new HashPartitioner(partitions = 2))
       .map(_._2)
-    println("rddTwoPartitions: " + countByPartition(rddTwoPartitions).collect.toList)
+    println(
+      "rddTwoPartitions: " + countByPartition(rddTwoPartitions).collect().toList
+    )
 
-    val sdsTwoPartitions: Dataset[Run2Data] = rddTwoPartitions.toDS
+    val sdsTwoPartitions: Dataset[Run2Data] = rddTwoPartitions.toDS()
     sdsTwoPartitions.show(numRows = data.length)
-    sdsTwoPartitions.mapPartitions { iter => Iterator(iter.length) }.show
+    sdsTwoPartitions.mapPartitions { iter => Iterator(iter.length) }.show()
 
   }
 
   /**
-   * Pair RDD[(K,V)] can be easily partitioned by HashPartitioner
-   * and partitionBy method.
+   * Pair RDD[(K,V)] can be easily partitioned by HashPartitioner and partitionBy
+   * method.
    */
   def run1(sc: SparkContext): Unit = {
     val data: IndexedSeq[(Int, Int)] = for {
@@ -76,25 +82,27 @@ object TestMain_02_HashPartitioner {
 
     val rdd: RDD[(Int, Int)] = sc.parallelize(data, 7)
 
-    println("count=" + rdd.count)
+    println("count=" + rdd.count())
     println("partitioner=" + rdd.partitioner)
     println("NumPartitions=" + rdd.getNumPartitions)
-    println("rdd: " + countByPartition(rdd).collect.toList)
+    println("rdd: " + countByPartition(rdd).collect().toList)
 
     val rddOnePartition = rdd.partitionBy(new HashPartitioner(1))
-    println("rddOnePartition: " + countByPartition(rddOnePartition).collect.toList)
+    println("rddOnePartition: " + countByPartition(rddOnePartition).collect().toList)
 
     val rddTwoPartitions = rdd.partitionBy(new HashPartitioner(2))
-    println("rddTwoPartitions: " + countByPartition(rddTwoPartitions).collect.toList)
+    println(
+      "rddTwoPartitions: " + countByPartition(rddTwoPartitions).collect().toList
+    )
     val rddTwoPartitionsSet: RDD[Set[Int]] = collectKeysByPartition(rddTwoPartitions)
-    println("rddTwoPartitionsSet: " + rddTwoPartitionsSet.collect.toList)
+    println("rddTwoPartitionsSet: " + rddTwoPartitionsSet.collect().toList)
 
     val rddSevenPartitions = rdd.partitionBy(new HashPartitioner(7))
     println(
-      "rddSevenPartitions: " + countByPartition(rddSevenPartitions).collect.toList
+      "rddSevenPartitions: " + countByPartition(rddSevenPartitions).collect().toList
     )
     val rddSevenPartitionsSet: RDD[Set[Int]] =
       collectKeysByPartition(rddSevenPartitions)
-    println("rddSevenPartitionsSet: " + rddSevenPartitionsSet.collect.toList)
+    println("rddSevenPartitionsSet: " + rddSevenPartitionsSet.collect().toList)
   }
 }

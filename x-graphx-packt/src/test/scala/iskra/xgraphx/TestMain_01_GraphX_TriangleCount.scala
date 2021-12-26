@@ -49,8 +49,8 @@ object TestMain_01_GraphX_TriangleCount {
      */
     println("CanonicalGraph edges:")
     val canonicalGraph: Graph[User, Int] =
-      graph.mapEdges(e => 1).removeSelfEdges.convertToCanonicalEdges(_ + _)
-    canonicalGraph.edges.toDF.sort($"srcId", $"dstId").show(numRows = 100)
+      graph.mapEdges(e => 1).removeSelfEdges().convertToCanonicalEdges(_ + _)
+    canonicalGraph.edges.toDF().sort($"srcId", $"dstId").show(numRows = 100)
 
     /* TriangleCount
     Compute the number of triangles passing through each vertex.
@@ -68,7 +68,7 @@ object TestMain_01_GraphX_TriangleCount {
         mergeMsg = _ ++ _
       )
     println("Neighbors:")
-    neighbors.toDF("id", "attr").sort($"id").show
+    neighbors.toDF("id", "attr").sort($"id").show()
 
     val graph1 = Graph(vertices = neighbors, edges = canonicalGraph.edges)
 
@@ -76,7 +76,7 @@ object TestMain_01_GraphX_TriangleCount {
       map = tr => tr.srcAttr & tr.dstAttr
     )
     println("Intersection of neighbors:")
-    graph2.edges.toDF.sort($"srcId", $"dstId").show(numRows = 100)
+    graph2.edges.toDF().sort($"srcId", $"dstId").show(numRows = 100)
 
     val allTriangles: RDD[(VertexId, VertexId, VertexId)] =
       graph2.edges
@@ -134,21 +134,21 @@ object TestMain_01_GraphX_TriangleCount {
     val users: VertexRDD[User]     = graph.vertices
 
     // triangleCounts
-    val triangleCounts: Graph[Int, String] = graph.triangleCount
+    val triangleCounts: Graph[Int, String] = graph.triangleCount()
     println("\ntriangleCounts:")
-    triangleCounts.vertices.toDF("vid", "triangleCnt").sort('vid).show
-    triangleCounts.edges.toDS.sort('srcId, 'dstId).show(numRows = 100)
+    triangleCounts.vertices.toDF("vid", "triangleCnt").sort($"vid").show()
+    triangleCounts.edges.toDS().sort($"srcId", $"dstId").show(numRows = 100)
     users
       .join(other = triangleCounts.vertices)
       .map { case (vid, (User(name, occupation), triangleCnt)) =>
         (vid, name, occupation, triangleCnt)
       }
       .toDF("vid", "name", "occupation", "triangleCnt")
-      .sort('vid)
-      .show
+      .sort($"vid")
+      .show()
     val triangleEdges: RDD[EdgeTriplet[Int, String]] =
       triangleCounts.triplets.filter { tr => tr.srcAttr > 0 && tr.dstAttr > 0 }
-    triangleEdges.map(_.toTuple).toDS.show(truncate = false, numRows = 100)
+    triangleEdges.map(_.toTuple).toDS().show(truncate = false, numRows = 100)
 
     triangleCounts
       .subgraph(
@@ -157,7 +157,7 @@ object TestMain_01_GraphX_TriangleCount {
       )
       .triplets
       .map(_.toTuple)
-      .toDS
+      .toDS()
       .show(numRows = 100)
 
   }
@@ -168,10 +168,10 @@ object TestMain_01_GraphX_TriangleCount {
 
     // EdgeTriplet
     val triplets: RDD[EdgeTriplet[User, String]] = graph.triplets
-    triplets.map(_.toTuple).toDS.show(truncate = false, numRows = 100)
-    val cntSameNameStart: Long = triplets.filter { tr =>
-      tr.srcAttr.name.charAt(0) == tr.dstAttr.name.charAt(0)
-    }.count
+    triplets.map(_.toTuple).toDS().show(truncate = false, numRows = 100)
+    val cntSameNameStart: Long = triplets
+      .filter { tr => tr.srcAttr.name.charAt(0) == tr.dstAttr.name.charAt(0) }
+      .count()
     println("cntSameNameStart = " + cntSameNameStart)
 
     // aggregateMessages, compute the in-degree of each vertex
@@ -183,7 +183,7 @@ object TestMain_01_GraphX_TriangleCount {
     val aggRDD: RDD[(Long, Int)] = aggregatedMessages.map { case (vid, msg) =>
       vid.toLong -> msg.toInt
     }
-    aggRDD.toDF("vid", "inDegree").sort('vid).show
+    aggRDD.toDF("vid", "inDegree").sort($"vid").show()
   }
 
   def readData(sr: SparkRunner): Graph[User, String] = {
@@ -214,9 +214,9 @@ object TestMain_01_GraphX_TriangleCount {
 
     val graph: Graph[User, String] = Graph(vertices = users, edges = friends)
     println("vertices:")
-    graph.vertices.toDF("id", "attr").sort('id).show
+    graph.vertices.toDF("id", "attr").sort($"id").show()
     println("edges:")
-    graph.edges.toDS.sort('srcId, 'dstId).show(numRows = 100)
+    graph.edges.toDS().sort($"srcId", $"dstId").show(numRows = 100)
     graph
   }
 }

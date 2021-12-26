@@ -28,11 +28,12 @@ object SparkUtils {
     if (logErrorLevelOnly)
       Logger.getLogger("org.apache").setLevel(Level.ERROR)
 
-    val spark = SparkSession.builder
+    val spark = SparkSession
+      .builder()
       .master(master = master)
       .appName(name = appName)
       // .config("spark.ui.showConsoleProgress", value = false)
-      .getOrCreate
+      .getOrCreate()
     spark.sparkContext.uiWebUrl.foreach { url => println("uiWebUrl at " + url) }
     spark
   }

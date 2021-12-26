@@ -33,15 +33,14 @@ $ jar tvf simple-spark-provided/target/scala-2.12/simple-spark-provided-assembly
  */
 object SimpleApp {
   def main(args: Array[String]): Unit = {
-    var builder = SparkSession.builder.appName("Simple Application")
+    var builder           = SparkSession.builder().appName("Simple Application")
     var stopSparkWhenDone = false
     if (args.length > 0) {
       args.zipWithIndex.foreach(println)
       val master = args(0)
-      builder = builder.master(master)
+      builder           = builder.master(master)
       stopSparkWhenDone = true
-    }
-    else builder = builder.master("local")
+    } else builder = builder.master("local")
     val spark = builder.getOrCreate()
 
     // to check if com.typesafe.config is available ar run time:
@@ -49,7 +48,7 @@ object SimpleApp {
     println(s"\n >>> dir = $dir \n")
 
     val logFile = dir + "/README.md"
-    //"/Users/owhite/dev/apache-github/spark/README.md"
+    // "/Users/owhite/dev/apache-github/spark/README.md"
 
     val logData = spark.read.textFile(logFile).cache()
     val numAs   = logData.filter(line => line.contains("a")).count()

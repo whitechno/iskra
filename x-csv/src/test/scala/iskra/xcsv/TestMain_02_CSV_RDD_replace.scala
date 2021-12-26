@@ -11,7 +11,7 @@ object TestMain_02_CSV_RDD_replace {
       RunnerInputSparkConfig(master = Some("local[*]"), sparkStopWhenDone = true)
     val sr: SparkRunner = SparkRunner(risc = risc)
 
-    //runRepairCSV(sr)
+    // runRepairCSV(sr)
     runReadCSV(sr)
 
     sr.stopSpark()
@@ -31,14 +31,14 @@ object TestMain_02_CSV_RDD_replace {
     import sr.spark.implicits._
 
     val fromRDD = readTextFile(sr, fileName = "from.csv").coalesce(numPartitions = 1)
-    fromRDD.toDF.show(truncate = false)
+    fromRDD.toDF().show(truncate = false)
 
     // repair csv
     val toRDD = fromRDD.map(CsvRepair.repairCsv)
 
     val toPath = dataPath + "to.csv.out"
-    //fromRDD.saveAsTextFile(toPath)
-    toRDD.toDF.write.mode(saveMode = SaveMode.Overwrite).text(toPath)
+    // fromRDD.saveAsTextFile(toPath)
+    toRDD.toDF().write.mode(saveMode = SaveMode.Overwrite).text(toPath)
 
   }
 

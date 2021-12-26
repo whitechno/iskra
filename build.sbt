@@ -1,6 +1,6 @@
 ThisBuild / version      := "0.1.1" //-SNAPSHOT
 ThisBuild / organization := "com.github.whitechno.iskra"
-ThisBuild / scalaVersion := library.versions.scala212
+ThisBuild / scalaVersion := library.versions.scala213
 
 /* assembly JAR for spark-submit:
 Spark libraries are "provided", but typesafeConfig has to be included
@@ -97,6 +97,7 @@ lazy val library = new {
   val versions = new {
     val scala211       = "2.11.12"
     val scala212       = "2.12.15"
+    val scala213       = "2.13.7"
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.2"
