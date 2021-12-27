@@ -56,6 +56,11 @@ $ ~/dev/apache-github/spark/bin/spark-submit \
 
 Downloaded pre-built Spark packages:
 
+- 3.2
+    - 3.2.0 (Hadoop 3.3.1) (Oct 13, 2021)  
+      `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2/bin/`
+    - 3.2.0 (Hadoop 3.3.1 and Scala 2.13) (Oct 13, 2021)  
+      `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/`
 - 3.1
     - 3.1.2 (Hadoop 3.2.0) (Jun 01, 2021)  
       `$ cd ~/dev/spark-bin/spark-3.1.2-bin-hadoop3.2/bin/`
@@ -90,12 +95,12 @@ Hadoop
 [Releases Archive](https://hadoop.apache.org/release.html)
 
 - 3.3
-    - 3.3.1 - Jun 15, 2021
+    - 3.3.1 - Jun 15, 2021 (Spark 3.2.0)
     - 3.3.0 - Jul 14, 2020
 - 3.2
     - 3.2.2 - Jan 09, 2021
     - 3.2.1 - Sep 22, 2019
-    - 3.2.0 - Jan 16, 2019 (stable) (Spark 3)
+    - 3.2.0 - Jan 16, 2019 (stable) (Spark 3.1.2)
 - 3.1
     - 3.1.4 - Aug 03, 2020
     - 3.1.3 - Oct 21, 2019
@@ -125,7 +130,7 @@ Hadoop
     - 2.7.7 - May 31, 2018
     - 2.7.6 - Apr 16, 2018
     - 2.7.5 - Dec 14, 2017
-    - 2.7.4 - Aug 04, 2017 (Spark 3)
+    - 2.7.4 - Aug 04, 2017 (Spark 3.0.0)
     - 2.7.3 - Aug 26, 2016 (Spark 2.4)
     - 2.7.2 - Jan 25, 2016
     - 2.7.1 - Jul 06, 2015 (stable)
@@ -137,6 +142,9 @@ Maven
 - [Maven Releases History](
   https://maven.apache.org/docs/history.html
   )
+    - 3.8.4 - 2021-11-14
+    - 3.8.3 - 2021-09-27
+    - 3.8.2 - 2021-08-04
     - 3.8.1 - 2021-04-04
     - 3.6.3 - 2019-11-25
     - 3.6.2 - 2019-08-27

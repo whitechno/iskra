@@ -14,10 +14,10 @@ $ ~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/spark-submit \
  * then we need to generate assembly JAR with those libraries included.
  * Spark-provided libraries have to be marked as '% "provided"':
 sbt> simple-spark-submit / assembly
-$ jar tvf simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
-$ ~/dev/apache-github/spark/bin/spark-submit \
+$ jar tvf simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+$ ~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/spark-submit \
   --class "iskra.SimpleApp" \
-  simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
 
  * for simple-spark-databricks project:
 sbt> simple-spark-databricks / assembly
