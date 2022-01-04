@@ -1,16 +1,9 @@
-package iskra.xgraphx
+package iskra.xgraphx.guide
 
-import org.apache.spark.rdd.RDD
-import org.apache.spark.graphx.{
-  Edge,
-  EdgeContext,
-  EdgeTriplet,
-  Graph,
-  VertexId,
-  VertexRDD
-}
 import iskra.runner.{ RunnerInputSparkConfig, SparkRunner }
 import org.apache.spark.SparkContext
+import org.apache.spark.graphx.{ Edge, Graph, VertexId, VertexRDD }
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
 object TestMain_01_GraphX_Overview {

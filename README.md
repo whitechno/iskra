@@ -7,7 +7,7 @@ Spark official resources
 - Spark releases  
   https://github.com/apache/spark/releases
     - 3.2
-        - 3.2.0 - Oct 06, 2021
+        - 3.2.0 - Oct 06, 2021 both Scala 2.12 and Scala 2.13
     - 3.1
         - 3.1.2 - May 23, 2021
         - 3.1.1 - Feb 21, 2021

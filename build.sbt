@@ -1,4 +1,4 @@
-ThisBuild / version      := "0.1.1" //-SNAPSHOT
+ThisBuild / version      := "0.1.1-SNAPSHOT" //-SNAPSHOT
 ThisBuild / organization := "com.github.whitechno.iskra"
 ThisBuild / scalaVersion := library.versions.scala213
 
@@ -164,5 +164,5 @@ lazy val commonSettings = List(
 )
 
 //ThisBuild / useCoursier := false
-ThisBuild / resolvers += Resolver.mavenCentral
-ThisBuild / resolvers += Resolver.sbtPluginRepo("releases")
+//ThisBuild / resolvers += Resolver.mavenCentral
+//ThisBuild / resolvers += Resolver.sbtPluginRepo("releases")
