@@ -6,14 +6,16 @@ Spark official resources
 
 - Spark releases  
   https://github.com/apache/spark/releases
-    - 3.2
-        - 3.2.0 - Oct 06, 2021 both Scala 2.12 and Scala 2.13
+    - 3.2 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
+        - 3.2.1 - Jan 19, 2022
+        - 3.2.0 - Oct 06, 2021
     - 3.1
+        - 3.1.3 - Feb 06, 2022 (Hadoop 2.7 and 3.2)
         - 3.1.2 - May 23, 2021
         - 3.1.1 - Feb 21, 2021
         - 3.1.0 - Jan 05, 2021
     - 3.0
-        - 3.0.3 - Jun 14, 2021
+        - 3.0.3 - Jun 14, 2021 (Hadoop 2.7 and 3.2)
         - 3.0.2 - Feb 19, 2021
         - 3.0.1 - Aug 27, 2020
         - 3.0.0 - Jun 05, 2020
@@ -57,7 +59,7 @@ $ ~/dev/apache-github/spark/bin/spark-submit \
 Downloaded pre-built Spark packages:
 
 - 3.2
-    - 3.2.0 (Hadoop 3.3.1) (Oct 13, 2021)  
+    - 3.2.0 (Hadoop 3.3.1 and Scala 2.12) (Oct 13, 2021)  
       `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2/bin/`
     - 3.2.0 (Hadoop 3.3.1 and Scala 2.13) (Oct 13, 2021)  
       `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/`

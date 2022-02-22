@@ -97,13 +97,13 @@ lazy val library = new {
   val versions = new {
     val scala211       = "2.11.12"
     val scala212       = "2.12.15"
-    val scala213       = "2.13.7"
+    val scala213       = "2.13.8"
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.2"
-    val spark32        = "3.2.0"
-    val scalatest      = "3.2.10"
-    val typesafeConfig = "1.4.1"
+    val spark32        = "3.2.1"
+    val scalatest      = "3.2.11"
+    val typesafeConfig = "1.4.2"
   }
 
   val supportedScalaVersions = List(versions.scala211, versions.scala212)
