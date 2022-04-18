@@ -45,7 +45,7 @@ Spark official resources
 Project notes
 -------------
 
-Latest Spark `3.3.0-SNAPSHOT` built from source using Maven:
+Latest Spark `3.4.0-SNAPSHOT` built from source using Maven:
 
 ```
 $ cd ~/dev/apache-github/spark/
@@ -104,9 +104,11 @@ Hadoop
 [Releases Archive](https://hadoop.apache.org/release.html)
 
 - 3.3
+    - 3.3.2 - Mar 03, 2021
     - 3.3.1 - Jun 15, 2021 (Spark 3.2.0)
     - 3.3.0 - Jul 14, 2020
 - 3.2
+    - 3.2.3 - Mar 28, 2022
     - 3.2.2 - Jan 09, 2021
     - 3.2.1 - Sep 22, 2019
     - 3.2.0 - Jan 16, 2019 (stable) (Spark 3.1.2)
@@ -151,6 +153,7 @@ Maven
 - [Maven Releases History](
   https://maven.apache.org/docs/history.html
   )
+    - 3.8.5 - 2022-03-05
     - 3.8.4 - 2021-11-14
     - 3.8.3 - 2021-09-27
     - 3.8.2 - 2021-08-04
