@@ -2,17 +2,29 @@ package iskra.runner
 
 import org.apache.spark.sql.SparkSession
 import org.apache.log4j.{ Level, Logger }
+import org.apache.spark.SparkConf
+//import org.apache.logging.{ log4j => log4j2 }
+import org.slf4j.{ Logger => Slf4jLogger, LoggerFactory }
 import org.apache.spark.SparkContext
 
 case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) {
 
   val spark: SparkSession = startSpark()
 
+  val sparkConf = new SparkConf()
+  println(s"*** conf: ${sparkConf.getAll.mkString("\n", "\n", "")}")
+
   private def startSpark(): SparkSession = {
     // stop outputting INFO and WARN to reduce log verbosity
-    if (risc.logErrorLevelOnly)
+    if (risc.logErrorLevelOnly) {
       Logger.getLogger("org.apache").setLevel(Level.ERROR)
+      LoggerFactory.getLogger("org.apache")
 
+//      println(log4j2.LogManager.getLogger("org.apache").getLevel)
+//      log4j2.core.config.Configurator
+//        .setLevel("org.apache", log4j2.Level.ERROR)
+//      println(log4j2.LogManager.getLogger("org.apache").getLevel)
+    }
     var builder: SparkSession.Builder = SparkSession.builder()
     risc.master.foreach { master => builder = builder.master(master) }
     risc.appName.foreach { name => builder = builder.appName(name = name) }
@@ -20,7 +32,20 @@ case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) 
     builder = builder.config("spark.ui.enabled", "false")
     builder = builder.config("spark.driver.allowMultipleContexts", "false")
 
+    /*
+spark.executor.extraJavaOptions -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two"
+
+from spark-env.sh
+# Options for launcher
+# - SPARK_LAUNCHER_OPTS, to set config properties and Java options for the launcher
+(e.g. "-Dx=y")
+# - SPARK_CONF_DIR      Alternate conf dir. (Default: ${SPARK_HOME}/conf)
+     */
+
+    // println(log4j2.LogManager.getLogger("org.apache").getLevel)
     val sparkSession: SparkSession = builder.getOrCreate()
+    // println(log4j2.LogManager.getLogger("org.apache").getLevel)
+
     val sparkContext: SparkContext = sparkSession.sparkContext
     // sparkSession.conf.get(key = "spark.master", default = "-")
     val sparkMaster: String     = sparkContext.master

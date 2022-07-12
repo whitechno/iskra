@@ -4,107 +4,233 @@ Spark eXperiments
 Spark official resources
 ------------------------
 
-- Spark releases  
-  https://github.com/apache/spark/releases  
-  https://search.maven.org/search?q=g:org.apache.spark
-    - 3.2 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
-        - 3.2.1 - Jan 19, 2022
-        - 3.2.0 - Oct 06, 2021
-    - 3.1
-        - 3.1.3 - Feb 06, 2022 (Hadoop 2.7 and 3.2)
-        - 3.1.2 - May 23, 2021
-        - 3.1.1 - Feb 21, 2021
-        - 3.1.0 - Jan 05, 2021
-    - 3.0
-        - 3.0.3 - Jun 14, 2021 (Hadoop 2.7 and 3.2)
-        - 3.0.2 - Feb 19, 2021
-        - 3.0.1 - Aug 27, 2020
-        - 3.0.0 - Jun 05, 2020
-    - 2.4 Scala 2.11 (Hadoop 2.7.3)
-        - 2.4.8 - May 09, 2021
-        - 2.4.7 - Sep 07, 2020
-        - 2.4.6 - May 29, 2020
-        - 2.4.5 - Feb 02, 2020
+- [Download Apache Spark](https://spark.apache.org/downloads.html)
+- [github.com/apache/spark](https://github.com/apache/spark)
+- [Building Spark](https://spark.apache.org/docs/latest/building-spark.html)
+- [Useful Developer Tools](https://spark.apache.org/developer-tools.html)
 
-- [Download Apache Spark](
-  https://spark.apache.org/downloads.html
-  )
+Project notes: running with various versions of Spark, Scala and Log4j
+----------------------------------------------------------------------
+To compile/test/package/assembly for all supportedScalaVersions (2.12 and 2.13), run:
 
-- [github.com/apache/spark](
-  https://github.com/apache/spark
-  )
+```text
+sbt> clean;+test:compile;+test;+assemblies;+package
+```
 
-- [Building Spark](
-  https://spark.apache.org/docs/latest/building-spark.html
-  )
-
-- [Useful Developer Tools](
-  https://spark.apache.org/developer-tools.html
-  )
-
-Project notes
--------------
+### Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`
 
 Latest Spark `3.4.0-SNAPSHOT` built from source using Maven:
 
 ```
-$ cd ~/dev/apache-github/spark/
+$ cd $DEV/apache-github/spark/
 $ ./build/mvn -DskipTests clean package
-
-$ ~/dev/apache-github/spark/bin/spark-submit \
-  --class "SimpleApp" \
-  --master local[4] \
-  simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
 ```
 
-Downloaded pre-built Spark packages:
+Modify `log4j2.properties` and execute `spark-submit`:
 
-- 3.2
-    - 3.2.1 Jan 26, 2022
+```
+$ cp $DEV/apache-github/spark/conf/log4j2.properties.template \
+     $DEV/apache-github/spark/conf/log4j2.properties 
+and change "rootLogger.level = info" to "rootLogger.level = error".
+$ $DEV/apache-github/spark/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+```
+
+### Execute `spark-submit` using Spark's default log4j profile
+
+***No control over Log4j***
+
+`org/apache/spark/log4j-defaults.properties` for Log4j 1.2 in
+[Spark 3.2.1 Logging](
+https://github.com/apache/spark/blob/v3.2.1/core/src/main/scala/org/apache/spark/internal/Logging.scala#L132
+)
+
+```
+$ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+```
+
+`org/apache/spark/log4j2-defaults.properties` for Log4j 2.0 in
+[Spark 3.3.0 Logging](
+https://github.com/apache/spark/blob/v3.3.0/core/src/main/scala/org/apache/spark/internal/Logging.scala#L136
+)
+
+```
+$ $DEV/spark-bin/spark-3.3.0-bin-hadoop2/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+```
+
+```
+$ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+```
+
+### Execute `spark-submit` with `--driver-java-options`
+
+***This is the FIRST preferred method of controlling Log4j.***
+This works only in local client mode. In standalone and cluster mode additional
+`spark-submit` settings are needed.
+
+Use `-Dlog4j.configuration` with Log4j 1.2:
+
+```
+$ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
+  --master local[4] \
+  --driver-java-options "-Dlog4j.configuration=file:$DEV/spark-bin/conf/log4j.properties" \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+```
+
+Use `-Dlog4j.configurationFile` with Log4j 2.0:
+
+```
+$ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
+  --master local[4] \
+  --driver-java-options "-Dlog4j.configurationFile=file:$DEV/spark-bin/conf/log4j2.properties" \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+```
+
+### Create `conf` dir with `log4j.properties` and `log4j2.properties`
+
+***Can be used with overridden `SPARK_CONF_DIR` environment variable.***
+
+```
+$ cp $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2/conf/log4j.properties.template \
+     $DEV/spark-bin/conf/log4j.properties
+and change "log4j.rootCategory=INFO, console" to "log4j.rootCategory=ERROR, console".
+
+$ cp $DEV/spark-bin/spark-3.3.0-bin-hadoop2/conf/log4j2.properties.template \
+     $DEV/spark-bin/conf/log4j2.properties
+and change "rootLogger.level = info" to "rootLogger.level = error".
+```
+
+### Execute `spark-submit` with overridden `SPARK_CONF_DIR` environment variable
+
+***This is the SECOND preferred method of controlling Log4j.***
+
+```
+$ export SPARK_CONF_DIR=$DEV/spark-bin/conf
+  $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+  unset SPARK_CONF_DIR
+```
+
+```
+$ export SPARK_CONF_DIR=$DEV/spark-bin/conf 
+  $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+  unset SPARK_CONF_DIR
+```
+
+### Execute `spark-submit` with modified `log4j.properties` in its default `conf` location
+
+***This is the THIRD preferred method of controlling Log4j.***
+
+```
+$ cp $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/conf/log4j.properties.template \
+     $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/conf/log4j.properties 
+and change "log4j.rootCategory=INFO, console" to "log4j.rootCategory=ERROR, console".
+$ $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/spark-submit \
+  --master local[4] \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+```
+
+Spark releases
+--------------
+[github releases](https://github.com/apache/spark/releases)  
+[Sonatype | Maven Central Repository](
+https://search.maven.org/search?q=g:org.apache.spark)
+
+- 3.3 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
+    - 3.3.0 - Jun 09, 2022 (first version with log4j 2.0)
+- 3.2 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
+    - 3.2.1 - Jan 19, 2022 (last version with log4j 1.2)
+    - 3.2.0 - Oct 06, 2021
+- 3.1 Scala 2.12
+    - 3.1.3 - Feb 06, 2022 (Hadoop 2.7 and 3.2)
+    - 3.1.2 - May 23, 2021
+    - 3.1.1 - Feb 21, 2021
+    - 3.1.0 - Jan 05, 2021
+- 3.0 Scala 2.12
+    - 3.0.3 - Jun 14, 2021 (Hadoop 2.7 and 3.2)
+    - 3.0.2 - Feb 19, 2021
+    - 3.0.1 - Aug 27, 2020
+    - 3.0.0 - Jun 05, 2020
+- 2.4 Scala 2.11 (Hadoop 2.7.3)
+    - 2.4.8 - May 09, 2021
+    - 2.4.7 - Sep 07, 2020
+    - 2.4.6 - May 29, 2020
+    - 2.4.5 - Feb 02, 2020
+
+Downloaded pre-built Spark packages
+-----------------------------------
+[Download Apache Spark](https://spark.apache.org/downloads.html)
+
+- 3.3 (Scala 2.12 and 2.13)
+    - 3.3.0 - Jun 16, 2022 (first version with log4j 2.0)
+        - Hadoop 2.7.4 and Scala 2.12  
+          `~/dev/spark-bin/spark-3.3.0-bin-hadoop2/bin/`
+        - Hadoop 3.3.2 and Scala 2.12  
+          `~/dev/spark-bin/spark-3.3.0-bin-hadoop3/bin/`
+        - Hadoop 3.3.2 and Scala 2.13  
+          `~/dev/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/`
+- 3.2 (Scala 2.12 and 2.13)
+    - 3.2.1 - Jan 26, 2022 (last version with log4j 1.2)
+        - Hadoop 2.7.4 and Scala 2.12  
+          `~/dev/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/`
         - Hadoop 3.3.1 and Scala 2.12  
           `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2/bin/`
         - Hadoop 3.3.1 and Scala 2.13  
           `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/`
-    - 3.2.0 Oct 13, 2021
+    - 3.2.0 - Oct 13, 2021
         - Hadoop 3.3.1 and Scala 2.12  
           `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2/bin/`
         - Hadoop 3.3.1 and Scala 2.13  
           `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/`
-- 3.1
-    - 3.1.2 (Hadoop 3.2.0) (Jun 01, 2021)  
-      `$ cd ~/dev/spark-bin/spark-3.1.2-bin-hadoop3.2/bin/`
-    - 3.1.1 (Hadoop 2.7.4) (Mar 02, 2021)  
-      `$ cd ~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
-- 3.0
-    - 3.0.2 (Feb 19, 2021)  
-      `$ cd ~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
+- 3.1 (Scala 2.12)
+    - 3.1.3 - Feb 18, 2022
+        - Hadoop 2.7.4  
+          `~/dev/spark-bin/spark-3.1.3-bin-hadoop2.7/bin/`
+        - Hadoop 3.2.0  
+          `~/dev/spark-bin/spark-3.1.3-bin-hadoop3.2/bin/`
+    - 3.1.2 - Jun 01, 2021 (Hadoop 3.2.0)  
+      `~/dev/spark-bin/spark-3.1.2-bin-hadoop3.2/bin/`
+    - 3.1.1 - Mar 02, 2021 (Hadoop 2.7.4)  
+      `~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
+- 3.0 (Scala 2.12)
+    - 3.0.2 - Feb 19, 2021  
+      `~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
     - 3.0.1  
-      `$ cd ~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
-    - 3.0.0 (Hadoop 2.7.4)
-      ```
-      $ cd ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/  
-        Spark 3.0.0 (git revision 3fdfce3120) built for Hadoop 2.7.4  
-        Build flags:  
-        -B -Pmesos -Pyarn -Pkubernetes -Psparkr -Pscala-2.12 -Phadoop-2.7  
-        -Phive -Phive-thriftserver -DzincPort=3036
-      
-      $ ~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/spark-submit \
-        --class "SimpleApp" \
-        --master local[4] \
-        simple-project/target/scala-2.12/simple-project_2.12-0.1.0-SNAPSHOT.jar
-      ```
-- 2.4
-    - 2.4.8 (Hadoop 2.7.3) (May 17, 2021)  
-      `$ cd ~/dev/spark-bin/spark-2.4.8-bin-hadoop2.7/bin/`
-    - 2.4.7 (Hadoop 2.7.3) (Sep 12, 2020)  
-      `$ cd ~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
+      `~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
+    - 3.0.0 (Hadoop 2.7.4)  
+      `~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/`
+- 2.4 (Scala 2.11)
+    - 2.4.8 - May 17, 2021 (Hadoop 2.7.3)  
+      `~/dev/spark-bin/spark-2.4.8-bin-hadoop2.7/bin/`
+    - 2.4.7 - Sep 12, 2020 (Hadoop 2.7.3)  
+      `~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
 
 Hadoop
 ------
 [Releases Archive](https://hadoop.apache.org/release.html)
 
 - 3.3
-    - 3.3.2 - Mar 03, 2021
+    - 3.3.3 - May 17, 2022
+    - 3.3.2 - Mar 03, 2021 (Spark 3.3.0)
     - 3.3.1 - Jun 15, 2021 (Spark 3.2.0)
     - 3.3.0 - Jul 14, 2020
 - 3.2
@@ -124,6 +250,7 @@ Hadoop
     - 3.0.1 - Mar 25, 2018
     - 3.0.0 - Dec 13, 2017
 - 2.10
+    - 2.10.2 - May 31, 2022
     - 2.10.1 - Sep 21, 2020
     - 2.10.0 - Oct 29, 2019 (stable)
 - 2.9
@@ -149,19 +276,29 @@ Hadoop
 
 Maven
 -----
+[Maven Releases History](https://maven.apache.org/docs/history.html)
 
-- [Maven Releases History](
-  https://maven.apache.org/docs/history.html
+- 3.8.6 - 2022-06-06
+- 3.8.5 - 2022-03-05
+- 3.8.4 - 2021-11-14
+- 3.8.3 - 2021-09-27
+- 3.8.2 - 2021-08-04
+- 3.8.1 - 2021-04-04
+- 3.6.3 - 2019-11-25
+- 3.6.2 - 2019-08-27
+- 3.6.1 - 2019-04-04
+- 3.6.0 - 2018-10-24
+
+Log4j and Spark
+---------------
+
+- [how-to-stop-info-messages-displaying-on-spark-console](
+  https://stackoverflow.com/questions/27781187/how-to-stop-info-messages-displaying-on-spark-console
   )
-    - 3.8.5 - 2022-03-05
-    - 3.8.4 - 2021-11-14
-    - 3.8.3 - 2021-09-27
-    - 3.8.2 - 2021-08-04
-    - 3.8.1 - 2021-04-04
-    - 3.6.3 - 2019-11-25
-    - 3.6.2 - 2019-08-27
-    - 3.6.1 - 2019-04-04
-    - 3.6.0 - 2018-10-24
+
+- [Spark Troubleshooting guide: Debugging Spark Applications: How to pass log4j.properties from executor and driver](
+  https://support.datafabric.hpe.com/s/article/Spark-Troubleshooting-guide-Debugging-Spark-Applications-How-to-pass-log4j-properties-from-executor-and-driver?language=en_US
+  )
 
 Spark submit, provided dependencies and assembly packages
 ---------------------------------------------------------

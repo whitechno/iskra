@@ -87,7 +87,10 @@ object TestMain_01_GraphX_Overview {
 
   def ppGraph(graph: Graph[_, _]): Unit = {
     val sparkSession: SparkSession = SparkSession.active
-    println(sparkSession.sparkContext.applicationId)
+    println(
+      "ppGraph: SparkSession.active.sparkContext.applicationId=" +
+        s"${sparkSession.sparkContext.applicationId}"
+    )
     import sparkSession.implicits._
     graph.vertices
       .map { case (id, attr) => (id, attr.toString) }
