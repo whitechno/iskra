@@ -1,13 +1,36 @@
 package iskra
 
+import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
+import org.slf4j.{ Logger, LoggerFactory }
 
 /*
  # Run it in SBT with `runWithProvidedSettings` in build.sbt:
 sbt> simple-spark-submit / runMain iskra.SimpleApp local[*]
  */
 object SimpleApp {
+  // Make the log field transient so that objects with Logging can
+  // be serialized and used on another machine
+  @transient private var log_ : Logger = null
+
+  // Method to get the logger name for this object
+  // Ignore trailing $'s in the class names for Scala objects
+  protected def logName: String = this.getClass.getName.stripSuffix("$")
+
+  // See log4j and log4j2 properties in resources
+  // iskra.SimpleApp logger is set to INFO level
+  protected def log: Logger = {
+    if (log_ == null) log_ = LoggerFactory.getLogger(logName)
+    log_
+  }
+
   def main(args: Array[String]): Unit = {
+    println(logName)
+    log.debug(logName)
+    log.info(logName)
+    log.warn(logName)
+    log.error(logName)
+
     var builder = SparkSession
       .builder()
       .appName("Simple  Application")
@@ -21,6 +44,7 @@ object SimpleApp {
     } else builder = builder.master("local")
 
     val spark: SparkSession = builder.getOrCreate()
+    val sc: SparkContext    = spark.sparkContext
 
     /* Stopping INFO and WARN messages displaying on spark console.
     This is the easiest way to stop Spark's very verbose INFO and WARN messages.
@@ -30,7 +54,15 @@ object SimpleApp {
     2) There are still some INFO and WARN messages logged from builder.getOrCreate()
        before spark.sparkContext.setLogLevel("ERROR") kicks in.
      */
-    spark.sparkContext.setLogLevel("ERROR")
+    sc.setLogLevel("ERROR")
+
+    log.info(
+      s"\n\t*** Spark ${spark.version} " +
+        s"(Scala ${util.Properties.versionNumberString})" +
+        s" running on ${sc.master} with ${sc.defaultParallelism} cores ***\n" +
+        s"\t    applicationId=${sc.applicationId}\n" +
+        sc.uiWebUrl.map("\t    uiWebUrl at " + _ + "\n").getOrElse("")
+    )
 
     /* system properties
          java.lang.System.getProperties: java.util.Properties
@@ -43,7 +75,7 @@ object SimpleApp {
          scala.sys.env:  Map[String, String]
          scala.util.Properties.envOrNone(name: String): String
      */
-    println(
+    log.debug(
       s"""
          |-----------------------------------------------------------------------
          |>>>>>>> using scala.util.Properties

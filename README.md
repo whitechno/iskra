@@ -3,7 +3,6 @@ Spark eXperiments
 
 Spark official resources
 ------------------------
-
 - [Download Apache Spark](https://spark.apache.org/downloads.html)
 - [github.com/apache/spark](https://github.com/apache/spark)
 - [Building Spark](https://spark.apache.org/docs/latest/building-spark.html)
@@ -12,7 +11,6 @@ Spark official resources
 Project notes: running with various versions of Spark, Scala and Log4j
 ----------------------------------------------------------------------
 To compile/test/package/assembly for all supportedScalaVersions (2.12 and 2.13), run:
-
 ```text
 sbt> clean;+test:compile;+test;+assemblies;+package
 ```
@@ -20,18 +18,20 @@ sbt> clean;+test:compile;+test;+assemblies;+package
 ### Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`
 
 Latest Spark `3.4.0-SNAPSHOT` built from source using Maven:
-
 ```
 $ cd $DEV/apache-github/spark/
 $ ./build/mvn -DskipTests clean package
 ```
 
-Modify `log4j2.properties` and execute `spark-submit`:
-
+Modify `log4j2.properties`:
 ```
 $ cp $DEV/apache-github/spark/conf/log4j2.properties.template \
      $DEV/apache-github/spark/conf/log4j2.properties 
 and change "rootLogger.level = info" to "rootLogger.level = error".
+```
+
+Execute `spark-submit`:
+```
 $ $DEV/apache-github/spark/bin/spark-submit \
   --master local[4] \
   --class "iskra.SimpleApp" \
@@ -42,11 +42,14 @@ $ $DEV/apache-github/spark/bin/spark-submit \
 
 ***No control over Log4j***
 
-`org/apache/spark/log4j-defaults.properties` for Log4j 1.2 in
-[Spark 3.2.1 Logging](
+For Log4j 1.2, Spark's default log4j profile:
+[org/apache/spark/log4j-defaults.properties](
+https://github.com/apache/spark/blob/v3.2.1/core/src/main/resources/org/apache/spark/log4j-defaults.properties
+) See [Spark 3.2.1 Logging](
 https://github.com/apache/spark/blob/v3.2.1/core/src/main/scala/org/apache/spark/internal/Logging.scala#L132
-)
-
+) and [Utils.setLogLevel](
+https://github.com/apache/spark/blob/v3.2.1/core/src/main/scala/org/apache/spark/util/Utils.scala#L2415
+).
 ```
 $ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
   --master local[4] \
@@ -54,11 +57,14 @@ $ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
   simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
 ```
 
-`org/apache/spark/log4j2-defaults.properties` for Log4j 2.0 in
-[Spark 3.3.0 Logging](
+For Log4j 2.0, Spark's default log4j profile:
+[org/apache/spark/log4j2-defaults.properties](
+https://github.com/apache/spark/blob/v3.3.0/core/src/main/resources/org/apache/spark/log4j2-defaults.properties
+). See [Spark 3.3.0 Logging](
 https://github.com/apache/spark/blob/v3.3.0/core/src/main/scala/org/apache/spark/internal/Logging.scala#L136
-)
-
+) and [Utils.setLogLevel](
+https://github.com/apache/spark/blob/v3.3.0/core/src/main/scala/org/apache/spark/util/Utils.scala#L2462
+).
 ```
 $ $DEV/spark-bin/spark-3.3.0-bin-hadoop2/bin/spark-submit \
   --master local[4] \
@@ -79,22 +85,23 @@ $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
 This works only in local client mode. In standalone and cluster mode additional
 `spark-submit` settings are needed.
 
-Use `-Dlog4j.configuration` with Log4j 1.2:
-
+Use `-Dlog4j.configuration=file:$DEV/spark-bin/conf/log4j.properties` with Log4j 1.2:
 ```
 $ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
   --master local[4] \
-  --driver-java-options "-Dlog4j.configuration=file:$DEV/spark-bin/conf/log4j.properties" \
+  --driver-java-options \
+"-Dlog4j.configuration=file:simple-spark-submit/spark-submit-conf/log4j.properties" \
   --class "iskra.SimpleApp" \
   simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
 ```
 
-Use `-Dlog4j.configurationFile` with Log4j 2.0:
-
+Use `-Dlog4j.configurationFile=file:$DEV/spark-bin/conf/log4j2.properties` with Log4j
+2.0:
 ```
 $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
   --master local[4] \
-  --driver-java-options "-Dlog4j.configurationFile=file:$DEV/spark-bin/conf/log4j2.properties" \
+  --driver-java-options \
+"-Dlog4j.configurationFile=file:simple-spark-submit/spark-submit-conf/log4j2.properties" \
   --class "iskra.SimpleApp" \
   simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
 ```
@@ -103,15 +110,19 @@ $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
 
 ***Can be used with overridden `SPARK_CONF_DIR` environment variable.***
 
+For Log4j 1.2:
 ```
 $ cp $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2/conf/log4j.properties.template \
      $DEV/spark-bin/conf/log4j.properties
+```
 and change "log4j.rootCategory=INFO, console" to "log4j.rootCategory=ERROR, console".
 
+For Log4j 2.0:
+```
 $ cp $DEV/spark-bin/spark-3.3.0-bin-hadoop2/conf/log4j2.properties.template \
      $DEV/spark-bin/conf/log4j2.properties
-and change "rootLogger.level = info" to "rootLogger.level = error".
 ```
+and change "rootLogger.level = info" to "rootLogger.level = error".
 
 ### Execute `spark-submit` with overridden `SPARK_CONF_DIR` environment variable
 
@@ -142,7 +153,9 @@ $ export SPARK_CONF_DIR=$DEV/spark-bin/conf
 ```
 $ cp $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/conf/log4j.properties.template \
      $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/conf/log4j.properties 
+```
 and change "log4j.rootCategory=INFO, console" to "log4j.rootCategory=ERROR, console".
+```
 $ $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/spark-submit \
   --master local[4] \
   --class "iskra.SimpleApp" \
