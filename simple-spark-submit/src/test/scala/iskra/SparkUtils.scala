@@ -7,8 +7,26 @@ import org.apache.spark.sql.functions.expr
 import org.slf4j.{ Logger, LoggerFactory }
 
 object SparkUtils {
-  val log: Logger     = LoggerFactory.getLogger(getClass.getName.stripSuffix("$"))
-  val logName: String = log.getName
+  private var log_ : Logger   = null
+  private val logName: String = getClass.getName.stripSuffix("$")
+
+  private def logLevel(log: Logger): String = {
+    var l = "FATAL"
+    if (log.isErrorEnabled) l = "ERROR"
+    if (log.isWarnEnabled) l  = "WARN"
+    if (log.isInfoEnabled) l  = "INFO"
+    if (log.isDebugEnabled) l = "DEBUG"
+    if (log.isTraceEnabled) l = "TRACE"
+    l
+  }
+
+  private val log: Logger = {
+    if (log_ == null) {
+      log_ = LoggerFactory.getLogger(logName)
+      println(s"Logger ${logName} is set with level ${logLevel(log_)}.")
+    }
+    log_
+  }
 
   /**
    * master(master: String) Sets the Spark master URL to connect to, such as "local"
@@ -19,11 +37,11 @@ object SparkUtils {
       master: String  = "local[*]",
       appName: String = "Iskra"
   ): SparkSession = {
-    println(logName)
-    log.debug(logName)
-    log.info(logName)
-    log.warn(logName)
-    log.error(logName)
+//    println(logName)
+//    log.debug(logName)
+//    log.info(logName)
+//    log.warn(logName)
+//    log.error(logName)
 
     val spark = SparkSession
       .builder()
