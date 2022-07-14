@@ -20,34 +20,49 @@ object SimpleApp {
   // See log4j and log4j2 properties in resources
   // iskra.SimpleApp logger is set to INFO level
   protected def log: Logger = {
-    if (log_ == null) log_ = LoggerFactory.getLogger(logName)
+    if (log_ == null) {
+      log_ = LoggerFactory.getLogger(logName)
+      println(s"Logger ${logName} is set with level ${logLevel(log_)}.")
+    }
     log_
   }
 
+  private def logLevel(log: Logger): String = {
+    var l = "FATAL"
+    if (log.isErrorEnabled) l = "ERROR"
+    if (log.isWarnEnabled) l  = "WARN"
+    if (log.isInfoEnabled) l  = "INFO"
+    if (log.isDebugEnabled) l = "DEBUG"
+    if (log.isTraceEnabled) l = "TRACE"
+    l
+  }
+
   def main(args: Array[String]): Unit = {
-    println(logName)
-    log.debug(logName)
-    log.info(logName)
-    log.warn(logName)
-    log.error(logName)
+
+    // checking if there is an active Spark session
+    log.warn(
+      s"""\n\t~~~ ${SparkSession.getActiveSession
+          .map("Active Spark session is on " + _.sparkContext.master)
+          .getOrElse("No active Spark session")} ~~~\n"""
+    )
 
     var builder = SparkSession
       .builder()
-      .appName("Simple  Application")
-      .config("spark.ui.enabled", "false")
+      .appName("Simple Application")
+    // .config("spark.ui.enabled", "false")
     var stopSparkWhenDone = false
-    if (args.length > 0) {
+    if (args.length > 0) { // runMain iskra.SimpleApp local[*]
       args.zipWithIndex.foreach(println)
       val master = args(0)
-      builder           = builder.master(master)
+      builder           = builder.master(master).config("spark.ui.enabled", "false")
       stopSparkWhenDone = true
-    } else builder = builder.master("local")
+    } // else spark-submit --master local[4]
 
     val spark: SparkSession = builder.getOrCreate()
     val sc: SparkContext    = spark.sparkContext
 
-    /* Stopping INFO and WARN messages displaying on spark console.
-    This is the easiest way to stop Spark's very verbose INFO and WARN messages.
+    /* Stopping INFO and WARN Spark messages displaying on console.
+    This is the easiest way to stop Spark's very verbose INFO and WARN log messages.
     However this is not a perfect solution because
     1) It sets ERROR level to rootLogger org.apache.log4j.Logger.getRootLogger(),
        so that all loggers are affected.
@@ -56,11 +71,16 @@ object SimpleApp {
      */
     sc.setLogLevel("ERROR")
 
-    log.info(
-      s"\n\t*** Spark ${spark.version} " +
-        s"(Scala ${util.Properties.versionNumberString})" +
-        s" running on ${sc.master} with ${sc.defaultParallelism} cores ***\n" +
-        s"\t    applicationId=${sc.applicationId}\n" +
+    import util.{ Properties => Props }
+    val osNameVersion = Props.osName +
+      Props.propOrNone("os.version").map(" " + _).getOrElse("")
+    log.warn(
+      s"\n\t~~~ Spark ${spark.version} " +
+        s"(Scala ${Props.versionNumberString}, Java ${Props.javaVersion}" +
+        s", ${osNameVersion})" +
+        s" on ${sc.master} with ${sc.defaultParallelism} cores ~~~\n" +
+        s"\t    applicationId=${sc.applicationId}" +
+        s", deployMode=${sc.deployMode}, isLocal=${sc.isLocal}\n" +
         sc.uiWebUrl.map("\t    uiWebUrl at " + _ + "\n").getOrElse("")
     )
 
@@ -78,14 +98,6 @@ object SimpleApp {
     log.debug(
       s"""
          |-----------------------------------------------------------------------
-         |>>>>>>> using scala.util.Properties
-         |
-         |        scala.util.Properties.propOrEmpty("spark.submit.deployMode"):
-         |        ${scala.util.Properties.propOrEmpty("spark.submit.deployMode")}
-         |        
-         |        scala.util.Properties.envOrNone("JAVA_HOME"):
-         |        ${scala.util.Properties.envOrElse("JAVA_HOME", "")}
-         |        
          |>>>>>>> getting system properties with scala.sys.props:
          |        ${sys.props.toSeq
           .sortBy(_._1)
@@ -94,12 +106,11 @@ object SimpleApp {
          |        :scala.sys.props
          |        
          |>>>>>>> getting system environment with scala.sys.env:
-         |        ${scala.sys.env.toSeq
+         |        ${sys.env.toSeq
           .sortBy(_._1)
           .map { case (k, v) => f"$k%32s -> $v" }
           .mkString("\n", "\n", "\n")}
          |        :scala.sys.env
-         |        
          |-----------------------------------------------------------------------
          |""".stripMargin
     )
@@ -110,26 +121,29 @@ object SimpleApp {
     println(
       s"""
          |-----------------------------------------------------------------------
-         |>>>>>>> com.typesafe.config.ConfigFactory.load().getString("user.dir"):
+         |>>>>>>> user.dir
+         |        com.typesafe.config.ConfigFactory.load().getString("user.dir"):
          |        $userDir
          |        
-         |        System.getProperty("user.dir"):
+         |        java.lang.System.getProperty("user.dir"):
          |        ${System.getProperty("user.dir")}
          |        
          |        scala.util.Properties.userDir:
-         |        ${scala.util.Properties.userDir}
+         |        ${util.Properties.userDir}
          |        
-         |        com.typesafe.config.ConfigFactory.load().getString("user.home"): 
-         |        $userHome
-         |        
-         |        System.getProperty("user.home"): ${System.getProperty("user.home")}
-         |        scala.util.Properties.userHome: ${scala.util.Properties.userHome}
+         |>>>>>>> user.home
+         |  com.typesafe.config.ConfigFactory.load().getString("user.home"): $userHome
+         |  java.lang.System.getProperty("user.home"): ${System.getProperty(
+          "user.home"
+        )}
+         |  scala.util.Properties.userHome: ${util.Properties.userHome}
          |-----------------------------------------------------------------------
          |""".stripMargin
     )
 
     // run some Spark:
-    val logFile = userDir + "/README.md" // "~/dev/apache-github/spark/README.md"
+    // val logFile = userDir + "/README.md" // "~/dev/apache-github/spark/README.md"
+    val logFile = sys.env.getOrElse("DEV", "") + "/apache-github/spark/README.md"
     val logData = spark.read.textFile(logFile).cache()
     val numAs   = logData.filter(line => line.contains("a")).count()
     val numBs   = logData.filter(line => line.contains("b")).count()
@@ -142,7 +156,10 @@ object SimpleApp {
          |""".stripMargin
     )
 
-    if (stopSparkWhenDone) spark.stop()
+    if (stopSparkWhenDone) {
+      log.warn(s"\n\t~~~ Stopping Spark ${sc.applicationId} ~~~")
+      spark.stop()
+    }
   }
 
 }

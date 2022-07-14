@@ -30,7 +30,7 @@ object TestMain_02_HashPartitioner {
    * Dataset[V] can be first converted to pair RDD[(K,V)], then partitioned by
    * partitionBy with HashPartitioner, and then transformed back to Dataset[V].
    */
-  private case class Run2Data(x: Int, y: Int)
+  case class Run2Data(x: Int, y: Int)
   def run2(spark: SparkSession): Unit = {
     import spark.implicits._
 

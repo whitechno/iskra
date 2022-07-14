@@ -116,8 +116,11 @@ lazy val library = new {
   val supportedScalaVersions = List(versions.scala212, versions.scala213)
 
   private val sparkLibs = Seq("core", "sql", "graphx")
+  val spark32provided = sparkLibs.map { lib =>
+    "org.apache.spark" %% s"spark-${lib}" % versions.spark32 % "provided"
+  }
   val spark3 = sparkLibs
-    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark32 }
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark33 }
   val spark3provided = spark3.map { _ % "provided" }
 
   val scalatest      = "org.scalatest" %% "scalatest" % versions.scalatest

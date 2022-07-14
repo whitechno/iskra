@@ -85,7 +85,9 @@ $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
 This works only in local client mode. In standalone and cluster mode additional
 `spark-submit` settings are needed.
 
-Use `-Dlog4j.configuration=file:$DEV/spark-bin/conf/log4j.properties` with Log4j 1.2:
+Use `-Dlog4j.configuration=file:$DEV/spark-bin/conf/log4j.properties` with Log4j 1.2.
+
+Run locally:
 ```
 $ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
   --master local[4] \
@@ -96,7 +98,9 @@ $ $DEV/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/spark-submit \
 ```
 
 Use `-Dlog4j.configurationFile=file:$DEV/spark-bin/conf/log4j2.properties` with Log4j
-2.0:
+2.0
+
+Run locally:
 ```
 $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
   --master local[4] \
@@ -105,6 +109,49 @@ $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
   --class "iskra.SimpleApp" \
   simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
 ```
+
+Run on a Spark standalone cluster in client deploy mode:
+```
+$ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
+  --master spark://Olegs-MacBook-Pro.local:7077 \
+  --driver-java-options \
+"-Dlog4j.configurationFile=file:simple-spark-submit/spark-submit-conf/log4j2.properties" \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+```
+
+Run on a Spark standalone cluster in cluster deploy mode:
+```
+$ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
+  --master spark://Olegs-MacBook-Pro.local:7077 \
+  --deploy-mode cluster \
+  --conf "spark.driver.extraJavaOptions=\
+-Dlog4j.configurationFile=file:$PWD/simple-spark-submit/spark-submit-conf/log4j2.properties" \
+  --conf "spark.executor.extraJavaOptions=\
+-Dlog4j.configurationFile=file:$PWD/simple-spark-submit/spark-submit-conf/log4j2.properties" \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.1.jar
+```
+
+Note that the file needs to exist locally on all the nodes. To satisfy that
+condition, you can either upload the file to the location available for the nodes
+(like hdfs) or access it locally with driver if using deploy-mode client. Otherwise,
+upload a custom `log4j.properties` using `spark-submit`, by adding it to
+the `--files` list of files to be uploaded with the application. Something like this:
+```
+spark-submit \
+    --master yarn \
+    --deploy-mode cluster \
+    --conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=file:log4j.properties" \
+    --conf "spark.executor.extraJavaOptions=-Dlog4j.configuration=file:log4j.properties" \
+    --files "/absolute/path/to/your/log4j.properties" \
+    --class com.github.atais.Main \
+    "SparkApp.jar"
+```
+Note that files uploaded to spark-cluster with `--files` will be available at root
+dir, so there is no need to add any path in `file:log4j.properties`.
+Files listed in `--files` must be provided with absolute path!
+`file:` prefix in configuration URI is mandatory.
 
 ### Create `conf` dir with `log4j.properties` and `log4j2.properties`
 
@@ -302,63 +349,64 @@ Maven
 - 3.6.1 - 2019-04-04
 - 3.6.0 - 2018-10-24
 
-Log4j and Spark
+Spark and scalatest
+-------------------
+Spark's own codebase provides good examples and best practices for using scalatest to
+do unit tests of Spark. In particular, the [spark-sql](
+https://github.com/apache/spark/tree/v3.3.0/sql/core/src/test) has the following test
+setup.
+
+[SharedSparkSession and SharedSparkSessionBase](
+https://github.com/apache/spark/blob/v3.3.0/sql/core/src/test/scala/org/apache/spark/sql/test/SharedSparkSession.scala
+) Suites extending trait `SharedSparkSession` are sharing resources (e.g.
+SparkSession) in their tests. That trait initializes the spark session in
+its `beforeAll()` implementation. Helper trait `SharedSparkSessionBase` for SQL test
+suites where all tests share a single `TestSparkSession`.
+
+[TestSparkSession and TestSQLContext](
+https://github.com/apache/spark/blob/v3.3.0/sql/core/src/test/scala/org/apache/spark/sql/test/TestSQLContext.scala
+) The `TestSparkSession` to use for all tests in `SharedSparkSession` suite. By
+default, the underlying `org.apache.spark.SparkContext` will be run in local mode
+with the default test configurations.
+
+Example of a test suite:
+[class DatasetSuite extends QueryTest
+with SharedSparkSession with AdaptiveSparkPlanHelper](
+https://github.com/apache/spark/blob/v3.3.0/sql/core/src/test/scala/org/apache/spark/sql/DatasetSuite.scala
+)
+
+Spark and Log4j
 ---------------
-
 - [how-to-stop-info-messages-displaying-on-spark-console](
-  https://stackoverflow.com/questions/27781187/how-to-stop-info-messages-displaying-on-spark-console
-  )
-
+  https://stackoverflow.com/questions/27781187/how-to-stop-info-messages-displaying-on-spark-console)
 - [Spark Troubleshooting guide: Debugging Spark Applications: How to pass log4j.properties from executor and driver](
-  https://support.datafabric.hpe.com/s/article/Spark-Troubleshooting-guide-Debugging-Spark-Applications-How-to-pass-log4j-properties-from-executor-and-driver?language=en_US
-  )
+  https://support.datafabric.hpe.com/s/article/Spark-Troubleshooting-guide-Debugging-Spark-Applications-How-to-pass-log4j-properties-from-executor-and-driver?language=en_US)
 
 Spark submit, provided dependencies and assembly packages
 ---------------------------------------------------------
-
 - [sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later](
-  https://stackoverflow.com/questions/34015452/sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later
-  )
-
+  https://stackoverflow.com/questions/34015452/sbt-how-to-set-transitive-dependencies-of-a-dependency-to-provided-later)
 - [sbt-spark-package](
-  https://github.com/databricks/sbt-spark-package
-  )
-
+  https://github.com/databricks/sbt-spark-package)
 - [How to add “provided” dependencies back to run/test tasks' classpath?](
-  https://stackoverflow.com/questions/18838944/how-to-add-provided-dependencies-back-to-run-test-tasks-classpath
-  )
-
+  https://stackoverflow.com/questions/18838944/how-to-add-provided-dependencies-back-to-run-test-tasks-classpath)
 - [Understanding build.sbt with sbt-spark-package plugin](
-  https://stackoverflow.com/questions/54796866/understanding-build-sbt-with-sbt-spark-package-plugin
-  )
-
+  https://stackoverflow.com/questions/54796866/understanding-build-sbt-with-sbt-spark-package-plugin)
 - [Introduction to SBT for Spark Programmers](
-  https://mungingdata.com/apache-spark/introduction-to-sbt/
-  ) March 2019
-
+  https://mungingdata.com/apache-spark/introduction-to-sbt/) March 2019
 - [Creating a Spark Project with SBT, IntelliJ, sbt-spark-package, and friends](
-  https://medium.com/@mrpowers/creating-a-spark-project-with-sbt-intellij-sbt-spark-package-and-friends-cc9108751c28
-  ) Sep 2017
-
+  https://medium.com/@mrpowers/creating-a-spark-project-with-sbt-intellij-sbt-spark-package-and-friends-cc9108751c28)
+  Sep 2017
 - [Setting up a Spark machine learning project with Scala, sbt and MLlib](
-  https://medium.com/@pedrodc/setting-up-a-spark-machine-learning-project-with-scala-sbt-and-mllib-831c329907ea
-  ) Jan 2019
+  https://medium.com/@pedrodc/setting-up-a-spark-machine-learning-project-with-scala-sbt-and-mllib-831c329907ea)
+  Jan 2019
 
 Other resources
 ---------------
-
 - [spark-daria](https://github.com/MrPowers/spark-daria)
-
 - [Scala and Spark for Big Data Analytics](
   https://www.packtpub.com/big-data-and-business-intelligence/scala-and-spark-big-data-analytics
-  )  
-  Md. Rezaul Karim, Sridhar Alla  
-  July 24, 2017  
-  898 pages
-
+  ) Md. Rezaul Karim, Sridhar Alla, July 24, 2017, 898 pages.
 - [Mastering Apache Spark 2.x - Second Edition](
   https://www.packtpub.com/big-data-and-business-intelligence/mastering-apache-spark-2x-second-edition
-  )  
-  Romeo Kienzler  
-  July 25, 2017  
-  354 pages
+  ) Romeo Kienzler, July 25, 2017, 354 pages.

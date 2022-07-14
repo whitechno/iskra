@@ -2,9 +2,9 @@ package iskra.runner
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{ SparkConf, SparkContext }
-import org.apache.log4j.{ Level, Logger }
+//import org.apache.log4j.{ Level, Logger }
 //import org.apache.logging.{ log4j => log4j2 }
-import org.slf4j.{ Logger => Slf4jLogger, LoggerFactory }
+import org.slf4j.{ Logger, LoggerFactory }
 
 case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) {
 
@@ -15,15 +15,15 @@ case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) 
 
   private def startSpark(): SparkSession = {
     // stop outputting INFO and WARN to reduce log verbosity
-    if (risc.logErrorLevelOnly) {
-      Logger.getLogger("org.apache").setLevel(Level.ERROR)
-      LoggerFactory.getLogger("org.apache")
+//    if (risc.logErrorLevelOnly) {
+//      Logger.getLogger("org.apache").setLevel(Level.ERROR)
+//      LoggerFactory.getLogger("org.apache")
 
 //      println(log4j2.LogManager.getLogger("org.apache").getLevel)
 //      log4j2.core.config.Configurator
 //        .setLevel("org.apache", log4j2.Level.ERROR)
 //      println(log4j2.LogManager.getLogger("org.apache").getLevel)
-    }
+//    }
     var builder: SparkSession.Builder = SparkSession.builder()
     risc.master.foreach { master => builder = builder.master(master) }
     risc.appName.foreach { name => builder = builder.appName(name = name) }
