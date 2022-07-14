@@ -7,8 +7,8 @@ import org.apache.spark.sql.functions.expr
 import org.slf4j.{ Logger, LoggerFactory }
 
 object SparkUtils {
-  private var log_ : Logger   = null
-  private val logName: String = getClass.getName.stripSuffix("$")
+  @transient private var log_ : Logger = _ // null
+  private val logName: String          = getClass.getName.stripSuffix("$")
 
   private def logLevel(log: Logger): String = {
     var l = "FATAL"
@@ -20,7 +20,7 @@ object SparkUtils {
     l
   }
 
-  private val log: Logger = {
+  private def log: Logger = {
     if (log_ == null) {
       log_ = LoggerFactory.getLogger(logName)
       println(s"Logger ${logName} is set with level ${logLevel(log_)}.")
@@ -37,11 +37,6 @@ object SparkUtils {
       master: String  = "local[*]",
       appName: String = "Iskra"
   ): SparkSession = {
-//    println(logName)
-//    log.debug(logName)
-//    log.info(logName)
-//    log.warn(logName)
-//    log.error(logName)
 
     val spark = SparkSession
       .builder()
