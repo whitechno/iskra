@@ -56,7 +56,14 @@ lazy val `simple-spark-provided` = project
     }
   )
 
-/** Utilities for more convenient running of Spark. */
+/** Several select examples from spark-examples included in Spark packages. */
+lazy val `spark-examples` = project
+  .settings(
+    commonSettings,
+    libraryDependencies ++= library.spark3provided
+  )
+
+/** Utilities for running Spark. */
 lazy val `spark-runner` = project
   .settings(
     commonSettings,

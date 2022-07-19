@@ -1,31 +1,30 @@
 package iskra
 
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkContext
 import org.apache.spark.sql.{ Dataset, SparkSession }
 import org.apache.spark.sql.functions.expr
 import org.slf4j.{ Logger, LoggerFactory }
 
 object SparkUtils {
-  @transient private var log_ : Logger = _ // null
-  private val logName: String          = getClass.getName.stripSuffix("$")
-
-  private def logLevel(log: Logger): String = {
-    var l = "FATAL"
-    if (log.isErrorEnabled) l = "ERROR"
-    if (log.isWarnEnabled) l  = "WARN"
-    if (log.isInfoEnabled) l  = "INFO"
-    if (log.isDebugEnabled) l = "DEBUG"
-    if (log.isTraceEnabled) l = "TRACE"
-    l
-  }
+  @transient private var _log: Logger = _ // null
+  private val logName: String         = getClass.getName.stripSuffix("$")
 
   private def log: Logger = {
-    if (log_ == null) {
-      log_ = LoggerFactory.getLogger(logName)
-      println(s"Logger ${logName} is set with level ${logLevel(log_)}.")
+    if (_log == null) {
+      _log = LoggerFactory.getLogger(logName)
+      println(s"Logger ${logName} is set with level ${logLevel(_log)}.")
     }
-    log_
+    _log
+  }
+
+  private def logLevel(log: Logger): String = {
+    if (log.isTraceEnabled) "TRACE"
+    else if (log.isDebugEnabled) "DEBUG"
+    else if (log.isInfoEnabled) "INFO"
+    else if (log.isWarnEnabled) "WARN"
+    else if (log.isErrorEnabled) "ERROR"
+    else "FATAL"
   }
 
   /**

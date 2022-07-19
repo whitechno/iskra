@@ -11,7 +11,7 @@ sbt> simple-spark-submit / runMain iskra.SimpleApp local[*]
 object SimpleApp {
   // Make the log field transient so that objects with Logging can
   // be serialized and used on another machine
-  @transient private var log_ : Logger = null
+  @transient private var _log: Logger = _ // null
 
   // Method to get the logger name for this object
   // Ignore trailing $'s in the class names for Scala objects
@@ -20,21 +20,20 @@ object SimpleApp {
   // See log4j and log4j2 properties in resources
   // iskra.SimpleApp logger is set to INFO level
   protected def log: Logger = {
-    if (log_ == null) {
-      log_ = LoggerFactory.getLogger(logName)
-      println(s"Logger ${logName} is set with level ${logLevel(log_)}.")
+    if (_log == null) {
+      _log = LoggerFactory.getLogger(logName)
+      println(s"Logger ${logName} is set with level ${logLevel(_log)}.")
     }
-    log_
+    _log
   }
 
   private def logLevel(log: Logger): String = {
-    var l = "FATAL"
-    if (log.isErrorEnabled) l = "ERROR"
-    if (log.isWarnEnabled) l  = "WARN"
-    if (log.isInfoEnabled) l  = "INFO"
-    if (log.isDebugEnabled) l = "DEBUG"
-    if (log.isTraceEnabled) l = "TRACE"
-    l
+    if (log.isTraceEnabled) "TRACE"
+    else if (log.isDebugEnabled) "DEBUG"
+    else if (log.isInfoEnabled) "INFO"
+    else if (log.isWarnEnabled) "WARN"
+    else if (log.isErrorEnabled) "ERROR"
+    else "FATAL"
   }
 
   def main(args: Array[String]): Unit = {
@@ -61,19 +60,11 @@ object SimpleApp {
     val spark: SparkSession = builder.getOrCreate()
     val sc: SparkContext    = spark.sparkContext
 
-    /* Stopping INFO and WARN Spark messages displaying on console.
-    This is the easiest way to stop Spark's very verbose INFO and WARN log messages.
-    However this is not a perfect solution because
-    1) It sets ERROR level to rootLogger org.apache.log4j.Logger.getRootLogger(),
-       so that all loggers are affected.
-    2) There are still some INFO and WARN messages logged from builder.getOrCreate()
-       before spark.sparkContext.setLogLevel("ERROR") kicks in.
-     */
-    sc.setLogLevel("ERROR")
+    sc.addFile("")
 
-    import util.{ Properties => Props }
-    val osNameVersion = Props.osName +
-      Props.propOrNone("os.version").map(" " + _).getOrElse("")
+    import scala.util.{ Properties => Props }
+    val osNameVersion =
+      Props.osName + Props.propOrNone("os.version").map(" " + _).getOrElse("")
     log.warn(
       s"\n\t~~~ Spark ${spark.version} " +
         s"(Scala ${Props.versionNumberString}, Java ${Props.javaVersion}" +
@@ -83,6 +74,34 @@ object SimpleApp {
         s", deployMode=${sc.deployMode}, isLocal=${sc.isLocal}\n" +
         sc.uiWebUrl.map("\t    uiWebUrl at " + _ + "\n").getOrElse("")
     )
+
+    log.warn(
+      s"""
+         |-----------------------------------------------------------------------
+         |>>>>>>> Spark configuration spark.sparkContext.getConf.toDebugString:
+         |${sc.getConf.toDebugString}
+         |-----------------------------------------------------------------------
+         |""".stripMargin
+    )
+
+    /* Stopping INFO and WARN Spark messages displaying on console with
+    spark.sparkContext.setLogLevel("ERROR")
+    This is the easiest way to stop Spark's very verbose INFO and WARN log messages.
+    However this is not a perfect solution because
+    1) It sets ERROR level to rootLogger org.apache.log4j.Logger.getRootLogger(),
+       so that all loggers are affected (unless they are specifically configured).
+    2) There are still some INFO and WARN messages logged from builder.getOrCreate()
+       before spark.sparkContext.setLogLevel("ERROR") kicks in.
+     */
+    val rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
+    println(
+      s"Root Logger ${Logger.ROOT_LOGGER_NAME} is set with level ${logLevel(rootLogger)}."
+    )
+    sc.setLogLevel("ERROR")
+    println(
+      s"Root Logger ${Logger.ROOT_LOGGER_NAME} is re-set with level ${logLevel(rootLogger)}."
+    )
+    println(s"Logger ${logName} is re-set with level ${logLevel(_log)}.")
 
     /* system properties
          java.lang.System.getProperties: java.util.Properties
@@ -99,14 +118,14 @@ object SimpleApp {
       s"""
          |-----------------------------------------------------------------------
          |>>>>>>> getting system properties with scala.sys.props:
-         |        ${sys.props.toSeq
+         |        ${scala.sys.props.toSeq
           .sortBy(_._1)
           .map { case (k, v) => f"$k%32s -> $v" }
           .mkString("\n", "\n", "\n")}
          |        :scala.sys.props
          |        
          |>>>>>>> getting system environment with scala.sys.env:
-         |        ${sys.env.toSeq
+         |        ${scala.sys.env.toSeq
           .sortBy(_._1)
           .map { case (k, v) => f"$k%32s -> $v" }
           .mkString("\n", "\n", "\n")}

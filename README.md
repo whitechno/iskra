@@ -1,5 +1,13 @@
 Spark eXperiments
 =================
+```text
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.4.0-SNAPSHOT
+      /_/
+```
 
 Spark official resources
 ------------------------
@@ -7,6 +15,42 @@ Spark official resources
 - [github.com/apache/spark](https://github.com/apache/spark)
 - [Building Spark](https://spark.apache.org/docs/latest/building-spark.html)
 - [Useful Developer Tools](https://spark.apache.org/developer-tools.html)
+- [Databricks Scala style](https://github.com/databricks/scala-style-guide)
+
+Build and test Spark
+--------------------
+Latest Spark `3.4.0-SNAPSHOT` built from source using Maven:
+```
+$ cd $DEV/apache-github/spark/
+$ ./build/mvn -DskipTests clean package
+build Spark submodules using the mvn -pl option, like:
+$ ./build/mvn -pl :spark-streaming_2.12 clean install
+or using SBT:
+$ ./build/sbt package
+```
+
+Testing with SBT
+```
+$ ./build/sbt
+sbt> core/test
+sbt> testOnly org.apache.spark.scheduler.DAGSchedulerSuite
+sbt> testOnly *DAGSchedulerSuite
+sbt> testOnly org.apache.spark.scheduler.*
+sbt> testOnly *DAGSchedulerSuite -- -z "[SPARK-3353]"
+$ build/sbt "core/testOnly *DAGSchedulerSuite -- -z SPARK-3353"
+To see test logs:
+$ cat core/target/unit-tests.log
+```
+
+Testing with Maven
+```
+To run individual Scala tests:
+$ build/mvn \
+-Dtest=none -DwildcardSuites=org.apache.spark.scheduler.DAGSchedulerSuite
+To run individual Java tests:
+$ build/mvn test \
+-DwildcardSuites=none -Dtest=org.apache.spark.streaming.JavaAPISuite test
+```
 
 Project notes: running with various versions of Spark, Scala and Log4j
 ----------------------------------------------------------------------
@@ -17,17 +61,11 @@ sbt> clean;+test:compile;+test;+assemblies;+package
 
 ### Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`
 
-Latest Spark `3.4.0-SNAPSHOT` built from source using Maven:
-```
-$ cd $DEV/apache-github/spark/
-$ ./build/mvn -DskipTests clean package
-```
-
 Modify `log4j2.properties`:
 ```
 $ cp $DEV/apache-github/spark/conf/log4j2.properties.template \
      $DEV/apache-github/spark/conf/log4j2.properties 
-and change "rootLogger.level = info" to "rootLogger.level = error".
+and change "rootLogger.level = info" to "rootLogger.level = warn".
 ```
 
 Execute `spark-submit`:
@@ -82,6 +120,7 @@ $ $DEV/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/spark-submit \
 ### Execute `spark-submit` with `--driver-java-options`
 
 ***This is the FIRST preferred method of controlling Log4j.***
+
 This works only in local client mode. In standalone and cluster mode additional
 `spark-submit` settings are needed.
 

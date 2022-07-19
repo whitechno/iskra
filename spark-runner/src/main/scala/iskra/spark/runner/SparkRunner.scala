@@ -1,10 +1,9 @@
-package iskra.runner
+package iskra.spark.runner
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{ SparkConf, SparkContext }
 //import org.apache.log4j.{ Level, Logger }
 //import org.apache.logging.{ log4j => log4j2 }
-import org.slf4j.{ Logger, LoggerFactory }
 
 case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) {
 

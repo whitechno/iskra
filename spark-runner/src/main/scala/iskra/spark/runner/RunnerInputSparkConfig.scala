@@ -1,4 +1,4 @@
-package iskra.runner
+package iskra.spark.runner
 
 case class RunnerInputSparkConfig(
     master: Option[String]     = None,

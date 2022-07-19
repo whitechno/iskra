@@ -1,6 +1,6 @@
 package iskra.xcsv
 
-import iskra.runner.{ RunnerInputSparkConfig, SparkRunner }
+import iskra.spark.runner.{ RunnerInputSparkConfig, SparkRunner }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{ DataFrame, SaveMode }
 

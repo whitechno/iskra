@@ -9,7 +9,7 @@ import org.apache.spark.graphx.{
   VertexId,
   VertexRDD
 }
-import iskra.runner.{ RunnerInputSparkConfig, SparkRunner }
+import iskra.spark.runner.{ RunnerInputSparkConfig, SparkRunner }
 
 /* data/packt/BigDataAnalytics/Chapter10-GraphX
 System.getProperty("user.home"), System.getProperty("user.dir")
