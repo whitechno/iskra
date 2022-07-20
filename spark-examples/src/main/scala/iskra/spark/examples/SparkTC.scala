@@ -11,7 +11,7 @@ sbt> +spark-examples/package
 $DEV/apache-github/spark/bin/spark-submit \
   --master local[4] \
   --class "iskra.spark.examples.SparkTC" \
-  spark-examples/target/scala-2.12/spark-examples_2.12-0.1.1.jar
+  spark-examples/target/scala-2.12/spark-examples_2.12-0.1.1.jar 1 20 10
  */
 
 /** Transitive closure on a graph. */
@@ -117,3 +117,8 @@ object SparkTC {
     spark.stop()
   }
 }
+/*
+See "Map-Reduce Extensions and Recursive Queries" by Afrati et al. 2011
+https://web.archive.org/web/20140810063150/
+http://www.edbt.org/Proceedings/2011-Uppsala/papers/edbt/a1-afrati.pdf
+ */

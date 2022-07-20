@@ -60,8 +60,6 @@ object SimpleApp {
     val spark: SparkSession = builder.getOrCreate()
     val sc: SparkContext    = spark.sparkContext
 
-    sc.addFile("")
-
     import scala.util.{ Properties => Props }
     val osNameVersion =
       Props.osName + Props.propOrNone("os.version").map(" " + _).getOrElse("")
