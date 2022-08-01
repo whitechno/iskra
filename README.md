@@ -9,6 +9,27 @@ Welcome to
       /_/
 ```
 
+<!-- TOC -->
+* [Spark eXperiments](#spark-experiments)
+    * [Spark official resources](#spark-official-resources)
+    * [Build and test Spark](#build-and-test-spark)
+    * [Project notes: running with various versions of Spark, Scala and Log4j](#project-notes--running-with-various-versions-of-spark-scala-and-log4j)
+        * [Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`](#run-with-the-latest-snapshot-version-of-spark-and-modified-log4j2properties)
+        * [Execute `spark-submit` using Spark's default log4j profile](#execute-spark-submit-using-sparks-default-log4j-profile)
+        * [Execute `spark-submit` with `--driver-java-options`](#execute-spark-submit-with---driver-java-options)
+        * [Create `conf` dir with `log4j.properties` and `log4j2.properties`](#create-conf-dir-with-log4jproperties-and-log4j2properties)
+        * [Execute `spark-submit` with overridden `SPARK_CONF_DIR` environment variable](#execute-spark-submit-with-overridden-spark_conf_dir-environment-variable)
+        * [Execute `spark-submit` with modified `log4j.properties` in its default `conf` location](#execute-spark-submit-with-modified-log4jproperties-in-its-default-conf-location)
+    * [Spark releases](#spark-releases)
+    * [Downloaded pre-built Spark packages](#downloaded-pre-built-spark-packages)
+    * [Hadoop](#hadoop)
+    * [Maven](#maven)
+    * [Spark and scalatest](#spark-and-scalatest)
+    * [Spark and Log4j](#spark-and-log4j)
+    * [Spark submit, provided dependencies and assembly packages](#spark-submit-provided-dependencies-and-assembly-packages)
+    * [Other resources](#other-resources)
+<!-- TOC -->
+
 Spark official resources
 ------------------------
 - [Download Apache Spark](https://spark.apache.org/downloads.html)
@@ -416,10 +437,21 @@ https://github.com/apache/spark/blob/v3.3.0/sql/core/src/test/scala/org/apache/s
 
 Spark and Log4j
 ---------------
-- [how-to-stop-info-messages-displaying-on-spark-console](
-  https://stackoverflow.com/questions/27781187/how-to-stop-info-messages-displaying-on-spark-console)
+- [Spark Configuration](
+  https://spark.apache.org/docs/latest/configuration.html)
+- [log4j manual](
+  https://logging.apache.org/log4j/1.2/manual.html)
+- [Class PatternLayout](
+  https://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
+  ) which explains patterns like `%-6r [%15.15t] %-5p %30.30c %x - %m%n`.
+- In [How to stop INFO messages displaying on spark console?](
+  https://stackoverflow.com/questions/27781187/how-to-stop-info-messages-displaying-on-spark-console/
+  ) go to "All the methods collected with examples" answer. It contains very detailed
+  instructions that **work**.
 - [Spark Troubleshooting guide: Debugging Spark Applications: How to pass log4j.properties from executor and driver](
   https://support.datafabric.hpe.com/s/article/Spark-Troubleshooting-guide-Debugging-Spark-Applications-How-to-pass-log4j-properties-from-executor-and-driver?language=en_US)
+- [spark-submit, how to specify log4j.properties](
+  https://stackoverflow.com/questions/42230235/spark-submit-how-to-specify-log4j-properties)
 
 Spark submit, provided dependencies and assembly packages
 ---------------------------------------------------------
