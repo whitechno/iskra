@@ -11,23 +11,23 @@ Welcome to
 
 <!-- TOC -->
 * [Spark eXperiments](#spark-experiments)
-    * [Spark official resources](#spark-official-resources)
-    * [Build and test Spark](#build-and-test-spark)
-    * [Project notes: running with various versions of Spark, Scala and Log4j](#project-notes--running-with-various-versions-of-spark-scala-and-log4j)
-        * [Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`](#run-with-the-latest-snapshot-version-of-spark-and-modified-log4j2properties)
-        * [Execute `spark-submit` using Spark's default log4j profile](#execute-spark-submit-using-sparks-default-log4j-profile)
-        * [Execute `spark-submit` with `--driver-java-options`](#execute-spark-submit-with---driver-java-options)
-        * [Create `conf` dir with `log4j.properties` and `log4j2.properties`](#create-conf-dir-with-log4jproperties-and-log4j2properties)
-        * [Execute `spark-submit` with overridden `SPARK_CONF_DIR` environment variable](#execute-spark-submit-with-overridden-spark_conf_dir-environment-variable)
-        * [Execute `spark-submit` with modified `log4j.properties` in its default `conf` location](#execute-spark-submit-with-modified-log4jproperties-in-its-default-conf-location)
-    * [Spark releases](#spark-releases)
-    * [Downloaded pre-built Spark packages](#downloaded-pre-built-spark-packages)
-    * [Hadoop](#hadoop)
-    * [Maven](#maven)
-    * [Spark and scalatest](#spark-and-scalatest)
-    * [Spark and Log4j](#spark-and-log4j)
-    * [Spark submit, provided dependencies and assembly packages](#spark-submit-provided-dependencies-and-assembly-packages)
-    * [Other resources](#other-resources)
+  * [Spark official resources](#spark-official-resources)
+  * [Build and test Spark](#build-and-test-spark)
+  * [Project notes: running with various versions of Spark, Scala and Log4j](#project-notes--running-with-various-versions-of-spark-scala-and-log4j)
+    * [Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`](#run-with-the-latest-snapshot-version-of-spark-and-modified-log4j2properties)
+    * [Execute `spark-submit` using Spark's default log4j profile](#execute-spark-submit-using-sparks-default-log4j-profile)
+    * [Execute `spark-submit` with `--driver-java-options`](#execute-spark-submit-with---driver-java-options)
+    * [Create `conf` dir with `log4j.properties` and `log4j2.properties`](#create-conf-dir-with-log4jproperties-and-log4j2properties)
+    * [Execute `spark-submit` with overridden `SPARK_CONF_DIR` environment variable](#execute-spark-submit-with-overridden-sparkconfdir-environment-variable)
+    * [Execute `spark-submit` with modified `log4j.properties` in its default `conf` location](#execute-spark-submit-with-modified-log4jproperties-in-its-default-conf-location)
+  * [Spark releases](#spark-releases)
+  * [Downloaded pre-built Spark packages](#downloaded-pre-built-spark-packages)
+  * [Hadoop](#hadoop)
+  * [Maven](#maven)
+  * [Spark and scalatest](#spark-and-scalatest)
+  * [Spark and Log4j](#spark-and-log4j)
+  * [Spark submit, provided dependencies and assembly packages](#spark-submit-provided-dependencies-and-assembly-packages)
+  * [Other resources](#other-resources)
 <!-- TOC -->
 
 Spark official resources
@@ -276,123 +276,126 @@ Spark releases
 https://search.maven.org/search?q=g:org.apache.spark)
 
 - 3.3 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
-    - 3.3.0 - Jun 09, 2022 (first version with log4j 2.0)
+  - 3.3.1 - Oct 15, 2022
+  - 3.3.0 - Jun 09, 2022 (first version with log4j 2.0)
 - 3.2 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
-    - 3.2.1 - Jan 19, 2022 (last version with log4j 1.2)
-    - 3.2.0 - Oct 06, 2021
+  - 3.2.3 - Nov 14, 2022
+  - 3.2.2 - Jul 11, 2022
+  - 3.2.1 - Jan 19, 2022 (last version with log4j 1.2)
+  - 3.2.0 - Oct 06, 2021
 - 3.1 Scala 2.12
-    - 3.1.3 - Feb 06, 2022 (Hadoop 2.7 and 3.2)
-    - 3.1.2 - May 23, 2021
-    - 3.1.1 - Feb 21, 2021
-    - 3.1.0 - Jan 05, 2021
+  - 3.1.3 - Feb 06, 2022 (Hadoop 2.7 and 3.2)
+  - 3.1.2 - May 23, 2021
+  - 3.1.1 - Feb 21, 2021
+  - 3.1.0 - Jan 05, 2021
 - 3.0 Scala 2.12
-    - 3.0.3 - Jun 14, 2021 (Hadoop 2.7 and 3.2)
-    - 3.0.2 - Feb 19, 2021
-    - 3.0.1 - Aug 27, 2020
-    - 3.0.0 - Jun 05, 2020
+  - 3.0.3 - Jun 14, 2021 (Hadoop 2.7 and 3.2)
+  - 3.0.2 - Feb 19, 2021
+  - 3.0.1 - Aug 27, 2020
+  - 3.0.0 - Jun 05, 2020
 - 2.4 Scala 2.11 (Hadoop 2.7.3)
-    - 2.4.8 - May 09, 2021
-    - 2.4.7 - Sep 07, 2020
-    - 2.4.6 - May 29, 2020
-    - 2.4.5 - Feb 02, 2020
+  - 2.4.8 - May 09, 2021
+  - 2.4.7 - Sep 07, 2020
+  - 2.4.6 - May 29, 2020
+  - 2.4.5 - Feb 02, 2020
 
 Downloaded pre-built Spark packages
 -----------------------------------
 [Download Apache Spark](https://spark.apache.org/downloads.html)
 
 - 3.3 (Scala 2.12 and 2.13)
-    - 3.3.0 - Jun 16, 2022 (first version with log4j 2.0)
-        - Hadoop 2.7.4 and Scala 2.12  
-          `~/dev/spark-bin/spark-3.3.0-bin-hadoop2/bin/`
-        - Hadoop 3.3.2 and Scala 2.12  
-          `~/dev/spark-bin/spark-3.3.0-bin-hadoop3/bin/`
-        - Hadoop 3.3.2 and Scala 2.13  
-          `~/dev/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/`
+  - 3.3.0 - Jun 16, 2022 (first version with log4j 2.0)
+    - Hadoop 2.7.4 and Scala 2.12  
+      `~/dev/spark-bin/spark-3.3.0-bin-hadoop2/bin/`
+    - Hadoop 3.3.2 and Scala 2.12  
+      `~/dev/spark-bin/spark-3.3.0-bin-hadoop3/bin/`
+    - Hadoop 3.3.2 and Scala 2.13  
+      `~/dev/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/`
 - 3.2 (Scala 2.12 and 2.13)
-    - 3.2.1 - Jan 26, 2022 (last version with log4j 1.2)
-        - Hadoop 2.7.4 and Scala 2.12  
-          `~/dev/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/`
-        - Hadoop 3.3.1 and Scala 2.12  
-          `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2/bin/`
-        - Hadoop 3.3.1 and Scala 2.13  
-          `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/`
-    - 3.2.0 - Oct 13, 2021
-        - Hadoop 3.3.1 and Scala 2.12  
-          `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2/bin/`
-        - Hadoop 3.3.1 and Scala 2.13  
-          `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/`
+  - 3.2.1 - Jan 26, 2022 (last version with log4j 1.2)
+    - Hadoop 2.7.4 and Scala 2.12  
+      `~/dev/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/`
+    - Hadoop 3.3.1 and Scala 2.12  
+      `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2/bin/`
+    - Hadoop 3.3.1 and Scala 2.13  
+      `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/`
+  - 3.2.0 - Oct 13, 2021
+    - Hadoop 3.3.1 and Scala 2.12  
+      `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2/bin/`
+    - Hadoop 3.3.1 and Scala 2.13  
+      `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/`
 - 3.1 (Scala 2.12)
-    - 3.1.3 - Feb 18, 2022
-        - Hadoop 2.7.4  
-          `~/dev/spark-bin/spark-3.1.3-bin-hadoop2.7/bin/`
-        - Hadoop 3.2.0  
-          `~/dev/spark-bin/spark-3.1.3-bin-hadoop3.2/bin/`
-    - 3.1.2 - Jun 01, 2021 (Hadoop 3.2.0)  
-      `~/dev/spark-bin/spark-3.1.2-bin-hadoop3.2/bin/`
-    - 3.1.1 - Mar 02, 2021 (Hadoop 2.7.4)  
-      `~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
+  - 3.1.3 - Feb 18, 2022
+    - Hadoop 2.7.4  
+      `~/dev/spark-bin/spark-3.1.3-bin-hadoop2.7/bin/`
+    - Hadoop 3.2.0  
+      `~/dev/spark-bin/spark-3.1.3-bin-hadoop3.2/bin/`
+  - 3.1.2 - Jun 01, 2021 (Hadoop 3.2.0)  
+    `~/dev/spark-bin/spark-3.1.2-bin-hadoop3.2/bin/`
+  - 3.1.1 - Mar 02, 2021 (Hadoop 2.7.4)  
+    `~/dev/spark-bin/spark-3.1.1-bin-hadoop2.7/bin/`
 - 3.0 (Scala 2.12)
-    - 3.0.2 - Feb 19, 2021  
-      `~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
-    - 3.0.1  
-      `~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
-    - 3.0.0 (Hadoop 2.7.4)  
-      `~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/`
+  - 3.0.2 - Feb 19, 2021  
+    `~/dev/spark-bin/spark-3.0.2-bin-hadoop2.7/bin/`
+  - 3.0.1  
+    `~/dev/spark-bin/spark-3.0.1-bin-hadoop2.7/bin/`
+  - 3.0.0 (Hadoop 2.7.4)  
+    `~/dev/spark-bin/spark-3.0.0-bin-hadoop2.7/bin/`
 - 2.4 (Scala 2.11)
-    - 2.4.8 - May 17, 2021 (Hadoop 2.7.3)  
-      `~/dev/spark-bin/spark-2.4.8-bin-hadoop2.7/bin/`
-    - 2.4.7 - Sep 12, 2020 (Hadoop 2.7.3)  
-      `~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
+  - 2.4.8 - May 17, 2021 (Hadoop 2.7.3)  
+    `~/dev/spark-bin/spark-2.4.8-bin-hadoop2.7/bin/`
+  - 2.4.7 - Sep 12, 2020 (Hadoop 2.7.3)  
+    `~/dev/spark-bin/spark-2.4.7-bin-hadoop2.7/bin/`
 
 Hadoop
 ------
 [Releases Archive](https://hadoop.apache.org/release.html)
 
 - 3.3
-    - 3.3.3 - May 17, 2022
-    - 3.3.2 - Mar 03, 2021 (Spark 3.3.0)
-    - 3.3.1 - Jun 15, 2021 (Spark 3.2.0)
-    - 3.3.0 - Jul 14, 2020
+  - 3.3.3 - May 17, 2022
+  - 3.3.2 - Mar 03, 2021 (Spark 3.3.0)
+  - 3.3.1 - Jun 15, 2021 (Spark 3.2.0)
+  - 3.3.0 - Jul 14, 2020
 - 3.2
-    - 3.2.3 - Mar 28, 2022
-    - 3.2.2 - Jan 09, 2021
-    - 3.2.1 - Sep 22, 2019
-    - 3.2.0 - Jan 16, 2019 (stable) (Spark 3.1.2)
+  - 3.2.3 - Mar 28, 2022
+  - 3.2.2 - Jan 09, 2021
+  - 3.2.1 - Sep 22, 2019
+  - 3.2.0 - Jan 16, 2019 (stable) (Spark 3.1.2)
 - 3.1
-    - 3.1.4 - Aug 03, 2020
-    - 3.1.3 - Oct 21, 2019
-    - 3.1.2 - Feb 06, 2019
-    - 3.1.1 - Aug 08, 2018 (stable)
-    - 3.1.0 - Apr 06, 2018
+  - 3.1.4 - Aug 03, 2020
+  - 3.1.3 - Oct 21, 2019
+  - 3.1.2 - Feb 06, 2019
+  - 3.1.1 - Aug 08, 2018 (stable)
+  - 3.1.0 - Apr 06, 2018
 - 3.0
-    - 3.0.3 - May 31, 2018
-    - 3.0.2 - Apr 21, 2018
-    - 3.0.1 - Mar 25, 2018
-    - 3.0.0 - Dec 13, 2017
+  - 3.0.3 - May 31, 2018
+  - 3.0.2 - Apr 21, 2018
+  - 3.0.1 - Mar 25, 2018
+  - 3.0.0 - Dec 13, 2017
 - 2.10
-    - 2.10.2 - May 31, 2022
-    - 2.10.1 - Sep 21, 2020
-    - 2.10.0 - Oct 29, 2019 (stable)
+  - 2.10.2 - May 31, 2022
+  - 2.10.1 - Sep 21, 2020
+  - 2.10.0 - Oct 29, 2019 (stable)
 - 2.9
-    - 2.9.2 - Nov 19, 2018
-    - 2.9.1 - May 03, 2018
-    - 2.9.0 - Dec 17, 2017
+  - 2.9.2 - Nov 19, 2018
+  - 2.9.1 - May 03, 2018
+  - 2.9.0 - Dec 17, 2017
 - 2.8
-    - 2.8.5 - Sep 15, 2018
-    - 2.8.4 - May 15, 2018
-    - 2.8.3 - Dec 12, 2017
-    - 2.8.2 - Oct 24, 2017
-    - 2.8.1 - Jun 08, 2017
-    - 2.8.0 - Mar 22, 2017
+  - 2.8.5 - Sep 15, 2018
+  - 2.8.4 - May 15, 2018
+  - 2.8.3 - Dec 12, 2017
+  - 2.8.2 - Oct 24, 2017
+  - 2.8.1 - Jun 08, 2017
+  - 2.8.0 - Mar 22, 2017
 - 2.7
-    - 2.7.7 - May 31, 2018
-    - 2.7.6 - Apr 16, 2018
-    - 2.7.5 - Dec 14, 2017
-    - 2.7.4 - Aug 04, 2017 (Spark 3.0.0)
-    - 2.7.3 - Aug 26, 2016 (Spark 2.4)
-    - 2.7.2 - Jan 25, 2016
-    - 2.7.1 - Jul 06, 2015 (stable)
-    - 2.7.0 - Apr 21, 2015
+  - 2.7.7 - May 31, 2018
+  - 2.7.6 - Apr 16, 2018
+  - 2.7.5 - Dec 14, 2017
+  - 2.7.4 - Aug 04, 2017 (Spark 3.0.0)
+  - 2.7.3 - Aug 26, 2016 (Spark 2.4)
+  - 2.7.2 - Jan 25, 2016
+  - 2.7.1 - Jul 06, 2015 (stable)
+  - 2.7.0 - Apr 21, 2015
 
 Maven
 -----
