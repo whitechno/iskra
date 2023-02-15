@@ -304,25 +304,32 @@ Downloaded pre-built Spark packages
 [Download Apache Spark](https://spark.apache.org/downloads.html)
 
 - 3.3 (Scala 2.12 and 2.13)
+  - 3.3.1 - Oct 25, 2022
+    - Scala 2.12 and Hadoop 2.7.4  
+      `~/dev/spark-bin/spark-3.3.1-bin-hadoop2/bin/`
+    - Scala 2.12 and Hadoop 3.3.2  
+      `~/dev/spark-bin/spark-3.3.1-bin-hadoop3/bin/`
+    - Scala 2.13 and Hadoop 3.3.2  
+      `~/dev/spark-bin/spark-3.3.1-bin-hadoop3-scala2.13/bin/`
   - 3.3.0 - Jun 16, 2022 (first version with log4j 2.0)
-    - Hadoop 2.7.4 and Scala 2.12  
+    - Scala 2.12 and Hadoop 2.7.4  
       `~/dev/spark-bin/spark-3.3.0-bin-hadoop2/bin/`
-    - Hadoop 3.3.2 and Scala 2.12  
+    - Scala 2.12 and Hadoop 3.3.2  
       `~/dev/spark-bin/spark-3.3.0-bin-hadoop3/bin/`
-    - Hadoop 3.3.2 and Scala 2.13  
+    - Scala 2.13 and Hadoop 3.3.2  
       `~/dev/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/`
 - 3.2 (Scala 2.12 and 2.13)
   - 3.2.1 - Jan 26, 2022 (last version with log4j 1.2)
-    - Hadoop 2.7.4 and Scala 2.12  
+    - Scala 2.12 and Hadoop 2.7.4  
       `~/dev/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/`
-    - Hadoop 3.3.1 and Scala 2.12  
+    - Scala 2.12 and Hadoop 3.3.1  
       `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2/bin/`
-    - Hadoop 3.3.1 and Scala 2.13  
+    - Scala 2.13 and Hadoop 3.3.1  
       `~/dev/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/`
   - 3.2.0 - Oct 13, 2021
-    - Hadoop 3.3.1 and Scala 2.12  
+    - Scala 2.12 and Hadoop 3.3.1  
       `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2/bin/`
-    - Hadoop 3.3.1 and Scala 2.13  
+    - Scala 2.13 and Hadoop 3.3.1  
       `~/dev/spark-bin/spark-3.2.0-bin-hadoop3.2-scala2.13/bin/`
 - 3.1 (Scala 2.12)
   - 3.1.3 - Feb 18, 2022
@@ -352,11 +359,13 @@ Hadoop
 [Releases Archive](https://hadoop.apache.org/release.html)
 
 - 3.3
+  - 3.3.4 - Aug 08, 2022
   - 3.3.3 - May 17, 2022
   - 3.3.2 - Mar 03, 2021 (Spark 3.3.0)
   - 3.3.1 - Jun 15, 2021 (Spark 3.2.0)
   - 3.3.0 - Jul 14, 2020
 - 3.2
+  - 3.2.4 - Jul 22, 2022
   - 3.2.3 - Mar 28, 2022
   - 3.2.2 - Jan 09, 2021
   - 3.2.1 - Sep 22, 2019
@@ -401,6 +410,8 @@ Maven
 -----
 [Maven Releases History](https://maven.apache.org/docs/history.html)
 
+- 3.9.0 - 2023-01-24
+- 3.8.7 - 2022-12-24
 - 3.8.6 - 2022-06-06
 - 3.8.5 - 2022-03-05
 - 3.8.4 - 2021-11-14
