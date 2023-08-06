@@ -108,15 +108,15 @@ lazy val assemblyProjects = List(
 lazy val library = new {
 
   val versions = new {
-    val scala211       = "2.11.12"
-    val scala212       = "2.12.17"
-    val scala213       = "2.13.10"
+    // val scala211       = "2.11.12"
+    val scala212       = "2.12.18"
+    val scala213       = "2.13.11"
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.3"
     val spark32        = "3.2.3"
     val spark33        = "3.3.1"
-    val scalatest      = "3.2.15"
+    val scalatest      = "3.2.16"
     val typesafeConfig = "1.4.2"
   }
 
