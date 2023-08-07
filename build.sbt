@@ -114,8 +114,9 @@ lazy val library = new {
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.3"
-    val spark32        = "3.2.3"
-    val spark33        = "3.3.1"
+    val spark32        = "3.2.4"
+    val spark33        = "3.3.2"
+    val spark34        = "3.4.1"
     val scalatest      = "3.2.16"
     val typesafeConfig = "1.4.2"
   }
@@ -127,7 +128,7 @@ lazy val library = new {
     "org.apache.spark" %% s"spark-${lib}" % versions.spark32 % "provided"
   }
   val spark3 = sparkLibs
-    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark33 }
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark34 }
   val spark3provided = spark3.map { _ % "provided" }
 
   val scalatest      = "org.scalatest" %% "scalatest" % versions.scalatest

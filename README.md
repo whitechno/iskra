@@ -1,19 +1,23 @@
 Spark eXperiments
 =================
+`$ $DEV/apache-github/spark/bin/spark-shell`
 ```text
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 3.4.0-SNAPSHOT
+   /___/ .__/\_,_/_/ /_/\_\   version 4.0.0-SNAPSHOT
       /_/
+         
+Using Scala version 2.12.18
 ```
+`scala> :quit`
 
 <!-- TOC -->
 * [Spark eXperiments](#spark-experiments)
   * [Spark official resources](#spark-official-resources)
   * [Build and test Spark](#build-and-test-spark)
-  * [Project notes: running with various versions of Spark, Scala and Log4j](#project-notes--running-with-various-versions-of-spark-scala-and-log4j)
+  * [Project notes: running with various versions of Spark, Scala and Log4j](#project-notes-running-with-various-versions-of-spark-scala-and-log4j)
     * [Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`](#run-with-the-latest-snapshot-version-of-spark-and-modified-log4j2properties)
     * [Execute `spark-submit` using Spark's default log4j profile](#execute-spark-submit-using-sparks-default-log4j-profile)
     * [Execute `spark-submit` with `--driver-java-options`](#execute-spark-submit-with---driver-java-options)
@@ -40,7 +44,7 @@ Spark official resources
 
 Build and test Spark
 --------------------
-Latest Spark `3.4.0-SNAPSHOT` built from source using Maven:
+Latest Spark `4.0.0-SNAPSHOT` built from source using Maven:
 ```
 $ cd $DEV/apache-github/spark/
 $ ./build/mvn -DskipTests clean package
@@ -91,10 +95,16 @@ and change "rootLogger.level = info" to "rootLogger.level = warn".
 
 Execute `spark-submit`:
 ```
+$ cd /Users/owhite/dev/whitechno-github/spica/iskra
+
 $ $DEV/apache-github/spark/bin/spark-submit \
   --master local[4] \
   --class "iskra.SimpleApp" \
   simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
+ 
+~~~ Spark 4.0.0-SNAPSHOT (Scala 2.12.18, Java 1.8.0_381, Mac OS X 12.6.8) on local[4] with 4 cores ~~~
+	applicationId=local-1691369604766, deployMode=client, isLocal=true
+	uiWebUrl at http://olegs-mbp.attlocal.net:4040
 ```
 
 ### Execute `spark-submit` using Spark's default log4j profile
@@ -271,14 +281,19 @@ $ $DEV/spark-bin/spark-3.2.1-bin-hadoop3.2-scala2.13/bin/spark-submit \
 
 Spark releases
 --------------
-[github releases](https://github.com/apache/spark/releases)  
+[github tags](https://github.com/apache/spark/tags)  
 [Sonatype | Maven Central Repository](
 https://search.maven.org/search?q=g:org.apache.spark)
 
+- 3.4 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
+  - 3.4.1 - Jun 19, 2023
+  - 3.4.0 - Apr 06, 2023
 - 3.3 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
-  - 3.3.1 - Oct 15, 2022
+  - 3.3.2 - Feb 10, 2023
+  - 3.3.1 - Oct 14, 2022
   - 3.3.0 - Jun 09, 2022 (first version with log4j 2.0)
 - 3.2 both Scala 2.12 (Hadoop 2.7 and 3.3) and Scala 2.13 (Hadoop 3.3)
+  - 3.2.4 - Apr 09, 2023
   - 3.2.3 - Nov 14, 2022
   - 3.2.2 - Jul 11, 2022
   - 3.2.1 - Jan 19, 2022 (last version with log4j 1.2)
@@ -303,7 +318,14 @@ Downloaded pre-built Spark packages
 -----------------------------------
 [Download Apache Spark](https://spark.apache.org/downloads.html)
 
+- 3.4 (Scala 2.12 and 2.13)
+  - 3.4.1 - Jun 23, 2023 (Hadoop 3.3 only)
+    - Scala 2.12 and Hadoop 3.3.4  
+      `~/dev/spark-bin/spark-3.4.1-bin-hadoop3/bin/`
+    - Scala 2.13 and Hadoop 3.3.4  
+      `~/dev/spark-bin/spark-3.4.1-bin-hadoop3-scala2.13/bin/`
 - 3.3 (Scala 2.12 and 2.13)
+  - 3.3.2 - Feb 17, 2023
   - 3.3.1 - Oct 25, 2022
     - Scala 2.12 and Hadoop 2.7.4  
       `~/dev/spark-bin/spark-3.3.1-bin-hadoop2/bin/`
@@ -319,6 +341,7 @@ Downloaded pre-built Spark packages
     - Scala 2.13 and Hadoop 3.3.2  
       `~/dev/spark-bin/spark-3.3.0-bin-hadoop3-scala2.13/bin/`
 - 3.2 (Scala 2.12 and 2.13)
+  - 3.2.4 - Apr 13, 2023
   - 3.2.1 - Jan 26, 2022 (last version with log4j 1.2)
     - Scala 2.12 and Hadoop 2.7.4  
       `~/dev/spark-bin/spark-3.2.1-bin-hadoop2.7/bin/`
