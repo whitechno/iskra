@@ -45,9 +45,10 @@ object SparkUtils {
       .getOrCreate()
 
     val sc: SparkContext = spark.sparkContext
+    import scala.util.{ Properties => Props }
     log.info(
       s"\n\t*** Spark ${spark.version} " +
-        s"(Scala ${util.Properties.versionNumberString})" +
+        s"(Scala ${Props.versionNumberString}, Java ${Props.javaVersion})" +
         s" running on ${sc.master} with ${sc.defaultParallelism} cores ***\n"
     )
 

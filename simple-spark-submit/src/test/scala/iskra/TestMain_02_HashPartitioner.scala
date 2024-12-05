@@ -17,6 +17,7 @@ import org.apache.spark.{
 import org.apache.spark.sql.{ Dataset, SparkSession }
 import SparkUtils._
 
+// simple-spark-submit / Test / runMain iskra.TestMain_02_HashPartitioner
 object TestMain_02_HashPartitioner {
   def main(args: Array[String]): Unit = {
     val spark: SparkSession = SparkUtils.startSpark()

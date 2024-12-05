@@ -18,12 +18,18 @@ Using Scala version 2.12.18
   * [Spark official resources](#spark-official-resources)
   * [Build and test Spark](#build-and-test-spark)
   * [Project notes: running with various versions of Spark, Scala and Log4j](#project-notes-running-with-various-versions-of-spark-scala-and-log4j)
-    * [Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`](#run-with-the-latest-snapshot-version-of-spark-and-modified-log4j2properties)
-    * [Execute `spark-submit` using Spark's default log4j profile](#execute-spark-submit-using-sparks-default-log4j-profile)
-    * [Execute `spark-submit` with `--driver-java-options`](#execute-spark-submit-with---driver-java-options)
-    * [Create `conf` dir with `log4j.properties` and `log4j2.properties`](#create-conf-dir-with-log4jproperties-and-log4j2properties)
-    * [Execute `spark-submit` with overridden `SPARK_CONF_DIR` environment variable](#execute-spark-submit-with-overridden-sparkconfdir-environment-variable)
-    * [Execute `spark-submit` with modified `log4j.properties` in its default `conf` location](#execute-spark-submit-with-modified-log4jproperties-in-its-default-conf-location)
+    * [Run with the latest SNAPSHOT version of Spark and modified
+      `log4j2.properties`](#run-with-the-latest-snapshot-version-of-spark-and-modified-log4j2properties)
+    * [Execute
+      `spark-submit` using Spark's default log4j profile](#execute-spark-submit-using-sparks-default-log4j-profile)
+    * [Execute `spark-submit` with
+      `--driver-java-options`](#execute-spark-submit-with---driver-java-options)
+    * [Create `conf` dir with `log4j.properties` and
+      `log4j2.properties`](#create-conf-dir-with-log4jproperties-and-log4j2properties)
+    * [Execute `spark-submit` with overridden
+      `SPARK_CONF_DIR` environment variable](#execute-spark-submit-with-overridden-sparkconfdir-environment-variable)
+    * [Execute `spark-submit` with modified `log4j.properties` in its default
+      `conf` location](#execute-spark-submit-with-modified-log4jproperties-in-its-default-conf-location)
   * [Spark releases](#spark-releases)
   * [Downloaded pre-built Spark packages](#downloaded-pre-built-spark-packages)
   * [Hadoop](#hadoop)
@@ -82,6 +88,8 @@ Project notes: running with various versions of Spark, Scala and Log4j
 To compile/test/package/assembly for all supportedScalaVersions (2.12 and 2.13), run:
 ```text
 sbt> clean;+test:compile;+test;+assemblies;+package
+sbt> reload;update
+sbt> clean;compile;test:compile;test;assemblies;package
 ```
 
 ### Run with the latest SNAPSHOT version of Spark and modified `log4j2.properties`
@@ -100,11 +108,34 @@ $ cd /Users/owhite/dev/whitechno-github/spica/iskra
 $ $DEV/apache-github/spark/bin/spark-submit \
   --master local[4] \
   --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.2.jar
+~~~ Spark 4.0.0-SNAPSHOT (Scala 2.13.15, Java 17.0.13, Mac OS X 14.7.1) on local[4] with 4 cores ~~~
+    applicationId=local-1733257548555, deployMode=client, isLocal=true
+    uiWebUrl at http://olegs-mbp.lan:4040
+Root Logger ROOT is set with level WARN.
+Root Logger ROOT is re-set with level ERROR.
+Logger iskra.SimpleApp is re-set with level ERROR.
+  
   simple-spark-submit/target/scala-2.12/simple-spark-submit-assembly_2.12-0.1.1.jar
- 
 ~~~ Spark 4.0.0-SNAPSHOT (Scala 2.12.18, Java 1.8.0_381, Mac OS X 12.6.8) on local[4] with 4 cores ~~~
 	applicationId=local-1691369604766, deployMode=client, isLocal=true
 	uiWebUrl at http://olegs-mbp.attlocal.net:4040
+```
+
+Execute `spark-submit` with project's `log4j2.properties`:
+```
+$ $DEV/apache-github/spark/bin/spark-submit \
+  --master local[4] \
+  --driver-java-options \
+"-Dlog4j.configurationFile=file:simple-spark-submit/spark-submit-conf/log4j2.properties" \
+  --class "iskra.SimpleApp" \
+  simple-spark-submit/target/scala-2.13/simple-spark-submit-assembly_2.13-0.1.2.jar 
+~~~ Spark 4.0.0-SNAPSHOT (Scala 2.13.15, Java 17.0.13, Mac OS X 14.7.1) on local[4] with 4 cores ~~~
+    applicationId=local-1733347709708, deployMode=client, isLocal=true
+    uiWebUrl at http://olegs-mbp.lan:4040
+Root Logger ROOT is set with level ERROR.
+Root Logger ROOT is re-set with level ERROR.
+Logger iskra.SimpleApp is re-set with level DEBUG.
 ```
 
 ### Execute `spark-submit` using Spark's default log4j profile
@@ -263,7 +294,9 @@ $ export SPARK_CONF_DIR=$DEV/spark-bin/conf
   unset SPARK_CONF_DIR
 ```
 
-### Execute `spark-submit` with modified `log4j.properties` in its default `conf` location
+### Execute `spark-submit` with modified `log4j.properties` in its default
+
+`conf` location
 
 ***This is the THIRD preferred method of controlling Log4j.***
 
@@ -518,3 +551,97 @@ Other resources
 - [Mastering Apache Spark 2.x - Second Edition](
   https://www.packtpub.com/big-data-and-business-intelligence/mastering-apache-spark-2x-second-edition
   ) Romeo Kienzler, July 25, 2017, 354 pages.
+
+.sbtopts for Java 17
+--------------------
+```text
+sbt -v
+[sbt_options] declare -a sbt_options='()'
+[process_args] java_version = '17'
+[copyRt] java9_rt = '/Users/owhite/.sbt/1.0/java9-rt-ext-homebrew_17_0_13/rt.jar'
+# Executing command line:
+java
+-Dfile.encoding=UTF-8
+-Xms1024m
+-Xmx1024m
+-Xss4M
+-XX:ReservedCodeCacheSize=128m
+-Dsbt.script=/usr/local/Cellar/sbt/1.10.6/libexec/bin/sbt
+-Dscala.ext.dirs=/Users/owhite/.sbt/1.0/java9-rt-ext-homebrew_17_0_13
+-jar
+/usr/local/Cellar/sbt/1.10.6/libexec/bin/sbt-launch.jar
+```
+
+```text
+with -J-XX:+PrintFlagsFinal in .sbtopts:
+sbt -v
+[sbt_options] declare -a sbt_options='()'
+[process_args] java_version = '17'
+[copyRt] java9_rt = '/Users/owhite/.sbt/1.0/java9-rt-ext-homebrew_17_0_13/rt.jar'
+# Executing command line:
+java
+-Dfile.encoding=UTF-8
+-XX:+PrintFlagsFinal
+-Xms1024m
+-Xmx1024m
+-Xss4M
+-XX:ReservedCodeCacheSize=128m
+-Dsbt.script=/usr/local/Cellar/sbt/1.10.6/libexec/bin/sbt
+-Dscala.ext.dirs=/Users/owhite/.sbt/1.0/java9-rt-ext-homebrew_17_0_13
+-jar
+/usr/local/Cellar/sbt/1.10.6/libexec/bin/sbt-launch.jar
+```
+
+Latest versions of the jdk comes with a nice tool called `jps` that tells you about
+running java processes.
+`jps -v` should point you to the processes and show the passed-in options.
+```text
+jps -v
+
+42182 sbt-launch.jar -Dfile.encoding=UTF-8 -XX:+PrintFlagsFinal -Xms1024m -Xmx1024m -Xss4M -XX:ReservedCodeCacheSize=128m -Dsbt.script=/usr/local/Cellar/sbt/1.10.6/libexec/bin/sbt -Dscala.ext.dirs=/Users/owhite/.sbt/1.0/java9-rt-ext-homebrew_17_0_13
+
+28136 Main abort vfprintf -XX:ErrorFile=/Users/owhite/java_error_in_idea_%p.log -XX:HeapDumpPath=/Users/owhite/java_error_in_idea.hprof -Xms128m -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -XX:+IgnoreUnrecognizedVMOptions -ea -Dsun.io.useCanonCaches=false -Dsun.java2d.metal=true -Djbr.catch.SIGABRT=true -Djdk.http.auth.tunneling.disabledSchemes="" -Djdk.attach.allowAttachSelf=true -Djdk.module.illegalAccess.silent=true -Dkotlinx.coroutines.debug=off -XX:CICompilerCount=2 -XX:ReservedCodeCacheSize=512m -XX:+UnlockDiagnosticVMOptions -XX:TieredOldPercentage=100000 -Dapple.awt.application.appearance=system -Xmx4096m -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf -Djb.vmOptionsFile=/Users/owhite/Library/Application Support/JetBrains/IdeaIC2024.2/idea.vmoptions -Djava.system.class.loader=com.intellij.util.lang.PathClassLoader -Didea.vendor.name=JetBrains -Didea.paths.selector=IdeaIC2024.2 -Djna.boot.library.path=/Applications/IntelliJ IDEA CE.app/Contents/lib/jna/amd64 -Dpty4j.prefe
+
+42507 Jps -Dapplication.home=/usr/local/Cellar/openjdk@17/17.0.13/libexec/openjdk.jdk/Contents/Home -Xms8m -Djdk.module.main=jdk.jcmd
+```
+
+```text
+-J-XX:+PrintFlagsFinal // JVM will print all the flags
+-J-XX:+UseG1GC // to enable G1GC
+-J-XX:-UseG1GC // to disable G1GC
+-J-Xmx2G
+-J-Xss256M
+-J-XX:+IgnoreUnrecognizedVMOptions
+```
+
+See
+stackoverflow [Running unit tests with Spark 3.3.0 on Java 17 fails with IllegalAccessError: class StorageUtils cannot access class sun.nio.ch.DirectBuffer](
+https://stackoverflow.com/questions/72724816/running-unit-tests-with-spark-3-3-0-on-java-17-fails-with-illegalaccesserror-cl
+) and a [discussion with one of the Spark developers](
+https://lists.apache.org/thread/814cpb1rpp73zkhtv9t4mkzzrznl82yn
+).
+
+From see Spark 4.0.0 `pom.xml`.
+```text
+    <!-- SPARK-36796 for JDK-17 test-->
+    <extraJavaTestArgs>
+      -XX:+IgnoreUnrecognizedVMOptions
+      --add-modules=jdk.incubator.vector
+      --add-opens=java.base/java.lang=ALL-UNNAMED
+      --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+      --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+      --add-opens=java.base/java.io=ALL-UNNAMED
+      --add-opens=java.base/java.net=ALL-UNNAMED
+      --add-opens=java.base/java.nio=ALL-UNNAMED
+      --add-opens=java.base/java.util=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
+      --add-opens=java.base/jdk.internal.ref=ALL-UNNAMED
+      --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+      --add-opens=java.base/sun.nio.cs=ALL-UNNAMED
+      --add-opens=java.base/sun.security.action=ALL-UNNAMED
+      --add-opens=java.base/sun.util.calendar=ALL-UNNAMED
+      -Djdk.reflect.useDirectMethodHandle=false
+      -Dio.netty.tryReflectionSetAccessible=true
+    </extraJavaTestArgs>
+```

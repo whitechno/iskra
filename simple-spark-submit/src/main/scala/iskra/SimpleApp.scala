@@ -4,9 +4,10 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import org.slf4j.{ Logger, LoggerFactory }
 
-/*
- # Run it in SBT with `runWithProvidedSettings` in build.sbt:
+/* Run it in SBT with `runWithProvidedSettings` in build.sbt:
 sbt> simple-spark-submit / runMain iskra.SimpleApp local[*]
+	~~~ Spark 4.0.0-preview2 (Scala 2.13.15, Java 17.0.13, Mac OS X 14.7.1) on local[*] with 16 cores ~~~
+	    applicationId=local-1733274600796, deployMode=client, isLocal=true
  */
 object SimpleApp {
   // Make the log field transient so that objects with Logging can

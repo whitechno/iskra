@@ -2,6 +2,9 @@ package iskra
 
 import org.apache.spark.sql.SparkSession
 
+/* simple-spark-submit / Test / runMain iskra.TestMain_01_SparkSetup
+*** Spark 4.0.0-preview2 (Scala 2.13.15, Java 17.0.13) running on local[*] with 16 cores ***
+ */
 object TestMain_01_SparkSetup {
   def main(args: Array[String]): Unit = {
     val spark: SparkSession = SparkUtils.startSpark()

@@ -6,6 +6,7 @@ import SparkUtils._
 import SparkUtils.DataLocation._
 import partitioner.CustomPartitionerI, CustomPartitionerI._
 
+// simple-spark-submit / Test / runMain iskra.TestMain_03_CreateWrite
 object TestMain_03_CreateWrite {
   def main(args: Array[String]): Unit = {
     val spark: SparkSession = SparkUtils.startSpark()

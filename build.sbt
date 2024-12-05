@@ -1,7 +1,9 @@
-ThisBuild / version            := "0.1.1" //-SNAPSHOT
-ThisBuild / organization       := "com.github.whitechno.iskra"
-ThisBuild / scalaVersion       := library.versions.scala213
-ThisBuild / crossScalaVersions := library.supportedScalaVersions
+ThisBuild / version      := "0.1.2" //-SNAPSHOT
+ThisBuild / organization := "com.github.whitechno.iskra"
+ThisBuild / scalaVersion := library.versions.scala213
+// Spark 4 works only with Scala 2.13+ and Java 11+
+// This project is set with Java 17
+//ThisBuild / crossScalaVersions := library.supportedScalaVersions
 
 /**
  * Assembly JAR for spark-submit: Spark libraries are "provided", but typesafeConfig
@@ -11,12 +13,13 @@ lazy val `simple-spark-submit` = project
   .settings(
     commonSettings,
     assemblySettings,
-    libraryDependencies ++= library.spark3provided,
+    libraryDependencies ++= library.spark4provided,
     libraryDependencies += library.typesafeConfig,
     // In order to runMain in SBT (as opposed to using 'spark-submit')
     // sbt> simple-spark-submit / runMain iskra.SimpleApp local[4]
     // we need to put "provided" Spark dependencies back to run classpath:
     runWithProvidedSettings
+    // classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.ScalaLibrary
   )
 
 /**
@@ -109,16 +112,18 @@ lazy val library = new {
 
   val versions = new {
     // val scala211       = "2.11.12"
-    val scala212       = "2.12.18"
-    val scala213       = "2.13.11"
+    val scala212       = "2.12.20"
+    val scala213       = "2.13.15"
     val spark24        = "2.4.8"
     val spark30        = "3.0.3"
     val spark31        = "3.1.3"
     val spark32        = "3.2.4"
     val spark33        = "3.3.2"
-    val spark34        = "3.4.1"
-    val scalatest      = "3.2.16"
-    val typesafeConfig = "1.4.2"
+    val spark34        = "3.4.4" // Oct 27 2024
+    val spark35        = "3.5.3" // Sep 24 2024
+    val spark40        = "4.0.0-preview2" // 2024-09-16
+    val scalatest      = "3.2.19"
+    val typesafeConfig = "1.4.3"
   }
 
   val supportedScalaVersions = List(versions.scala212, versions.scala213)
@@ -128,8 +133,11 @@ lazy val library = new {
     "org.apache.spark" %% s"spark-${lib}" % versions.spark32 % "provided"
   }
   val spark3 = sparkLibs
-    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark34 }
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark35 }
   val spark3provided = spark3.map { _ % "provided" }
+  val spark4 = sparkLibs
+    .map { lib => "org.apache.spark" %% s"spark-${lib}" % versions.spark40 }
+  val spark4provided = spark4.map { _ % "provided" }
 
   val scalatest      = "org.scalatest" %% "scalatest" % versions.scalatest
   val typesafeConfig = "com.typesafe"   % "config"    % versions.typesafeConfig
@@ -182,7 +190,8 @@ lazy val runWithProvidedSettings = List(
 )
 
 lazy val commonSettings = List(
-  scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
+  scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature"),
+  javacOptions ++= Seq("-source", "17", "-target", "17")
 )
 
 // OLD:

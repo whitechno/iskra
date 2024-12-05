@@ -9,8 +9,9 @@ case class SparkRunner(risc: RunnerInputSparkConfig = RunnerInputSparkConfig()) 
 
   val spark: SparkSession = startSpark()
 
-  val sparkConf = new SparkConf()
-  println(s"*** conf: ${sparkConf.getAll.mkString("\n", "\n", "")}")
+  private val sparkConf = new SparkConf()
+  if (!sparkConf.getAll.isEmpty)
+    println(s"*** conf: ${sparkConf.getAll.mkString("\n", "\n", "")}")
 
   private def startSpark(): SparkSession = {
     // stop outputting INFO and WARN to reduce log verbosity

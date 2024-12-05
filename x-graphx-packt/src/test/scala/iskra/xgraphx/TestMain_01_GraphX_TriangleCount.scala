@@ -16,7 +16,9 @@ System.getProperty("user.home"), System.getProperty("user.dir")
 val users: RDD[(Long, User)] = sr.spark.sparkContext.parallelize(dataUsers)
 
 sparkStopWhenDone = true is needed (only!) when run in sbt:
-sbt> x-graphx-packt / test:runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
+sbt> x-graphx-packt / Test / runMain iskra.xgraphx.TestMain_01_GraphX_TriangleCount
+*** Spark 3.5.3 (Scala 2.13.15) running on local[*] with 16 cores ***
+	    applicationId=local-1733354143146
 
     println("vertices:")
     graph.vertices.toDF("id", "attr").sort($"id").show

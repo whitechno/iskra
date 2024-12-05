@@ -4,7 +4,11 @@ import iskra.spark.runner.{ RunnerInputSparkConfig, SparkRunner }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{ DataFrame, SaveMode }
 
-// sbt> x-csv / test:runMain iskra.xcsv.TestMain_02_CSV_RDD_replace
+/* x-csv / Test / runMain iskra.xcsv.TestMain_02_CSV_RDD_replace
+See test/resources/log4j2.properties
+	*** Spark 3.5.3 (Scala 2.13.15) running on local[*] with 16 cores ***
+	    applicationId=local-1733351473799
+ */
 object TestMain_02_CSV_RDD_replace {
   def main(args: Array[String]): Unit = {
     val risc =

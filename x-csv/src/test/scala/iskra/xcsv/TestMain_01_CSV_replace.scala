@@ -1,5 +1,6 @@
 package iskra.xcsv
 
+// x-csv / Test / runMain iskra.xcsv.TestMain_01_CSV_replace
 object TestMain_01_CSV_replace extends App {
 
   val target      = """\",""""

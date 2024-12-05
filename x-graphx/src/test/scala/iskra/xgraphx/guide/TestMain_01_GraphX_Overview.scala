@@ -6,6 +6,7 @@ import org.apache.spark.graphx.{ Edge, Graph, VertexId, VertexRDD }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
+// x-graphx / Test / runMain iskra.xgraphx.guide.TestMain_01_GraphX_Overview
 object TestMain_01_GraphX_Overview {
   def main(args: Array[String]): Unit = {
     val sr: SparkRunner = SparkRunner(risc =
@@ -50,7 +51,7 @@ object TestMain_01_GraphX_Overview {
         Edge(5L, 7L, "pi")
       )
     )
-    // Define a default user in case there are relationship with missing user
+    // Define a default user in case there is relationship with missing user
     val defaultUser = ("John Doe", "Missing")
     // Build the initial Graph
     val graph: Graph[(String, String), String] =

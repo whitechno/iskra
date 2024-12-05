@@ -2,7 +2,16 @@ package iskra
 
 import java.util.Random
 
+// simple-spark-submit / Test / runMain iskra.TestMain_00_Random
 object TestMain_00_Random extends App {
+
+  import scala.util.{ Properties => Props }
+  println(
+    s"\n\t*** " +
+      s"(Scala ${Props.versionNumberString}, Java ${Props.javaVersion})" +
+      s" ***\n"
+  )
+
   val seed  = 1
   val bound = 10
   val r     = new Random(seed)

@@ -5,6 +5,7 @@ import org.apache.spark.rdd.RDD
 import iskra.SparkUtils.DataLocation._
 import iskra.partitioner.CustomPartitionerII, CustomPartitionerII._
 
+// simple-spark-submit / Test / runMain iskra.TestMain_04_ReadRepartition
 object TestMain_04_ReadRepartition {
   def main(args: Array[String]): Unit = {
     val spark: SparkSession = SparkUtils.startSpark()

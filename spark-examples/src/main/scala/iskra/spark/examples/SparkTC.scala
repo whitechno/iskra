@@ -11,7 +11,7 @@ sbt> +spark-examples/package
 $DEV/apache-github/spark/bin/spark-submit \
   --master local[4] \
   --class "iskra.spark.examples.SparkTC" \
-  spark-examples/target/scala-2.12/spark-examples_2.12-0.1.1.jar 1 20 10
+  spark-examples/target/scala-2.13/spark-examples_2.13-0.1.2.jar 1 20 10
  */
 
 /** Transitive closure on a graph. */
